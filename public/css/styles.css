@@ -1,101 +1,175 @@
+/* General Styles */
 body {
   font-family: Arial, sans-serif;
+  color: #333;
   margin: 0;
   padding: 0;
+}
+
+h1, h2 {
   text-align: center;
 }
 
-header {
-  background: #222;
-  color: white;
+/* Hero Section */
+.hero {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 40px;
+  background: #f4f4f4;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+.hero-text {
+  max-width: 50%;
 }
 
-.account {
-  color: white;
-  text-decoration: none;
+.hero-text h1 {
+  font-size: 2em;
 }
 
-nav ul {
+.hero-text h2 {
+  color: #0073e6;
+}
+
+.hero-text ul {
   list-style: none;
   padding: 0;
 }
 
-nav ul li {
-  display: inline;
-  margin: 0 10px;
+.hero-text ul li {
+  font-size: 1.2em;
+  margin: 5px 0;
 }
 
-nav ul li a {
-  color: white;
-  text-decoration: none;
-}
-
-.hero {
-  padding: 20px;
-  text-align: center;
-}
-
-.hero img {
-  width: 100%;
-  max-width: 400px;
-}
-
-.btn {
+.cta-button {
   display: inline-block;
-  background: blue;
+  background: #0073e6;
   color: white;
   padding: 10px 20px;
   text-decoration: none;
   border-radius: 5px;
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Reviews Section */
+.reviews {
+  padding: 20px;
 }
 
 .reviews ul {
-  text-align: left;
-  max-width: 500px;
-  margin: 0 auto;
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+.reviews ul li {
+  font-size: 1.1em;
+  margin: 10px 0;
+}
+
+/* Upgrades Section */
+.upgrades {
+  padding: 20px;
+  background: #eee;
+}
+
+.upgrades h2 {
+  text-align: center;
 }
 
 .upgrade-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 600px;
+  margin: auto;
 }
 
 .upgrade-item {
-  margin: 10px;
   text-align: center;
 }
 
 .upgrade-item img {
-  width: 80px;
+  width: 100px;
+  height: auto;
+  display: block;
+  margin: auto;
 }
-@media screen and (min-width: 768px) {
+
+.upgrade-item a {
+  display: block;
+  margin-top: 5px;
+  text-decoration: none;
+  color: #0073e6;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 10px;
+  background: #333;
+  color: white;
+  margin-top: 20px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
   .hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
+      flex-direction: column;
+      text-align: center;
   }
 
-  .hero img {
-      max-width: 500px;
+  .hero-text {
+      max-width: 100%;
   }
 
   .upgrade-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: 1fr;
+  }
+}
+/* Mobile Navigation */
+#navToggle {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Default menu */
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+}
+
+/* Mobile menu styles */
+@media (max-width: 768px) {
+  #navToggle {
+      display: block;
   }
 
-  .upgrade-item img {
-      width: 100px;
+  nav ul {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background: white;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      padding: 10px;
+  }
+
+  nav ul.open {
+      display: flex;
   }
 }

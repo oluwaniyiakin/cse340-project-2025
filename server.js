@@ -1,42 +1,46 @@
 /******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
+ * Primary Server File for CSE Motors App
+ * Manages Routing, Middleware, and Server Configurations
  ******************************************/
 
 /* ***********************
- * Require Statements
+ * 1. Require Statements
  *************************/
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-require("dotenv").config(); // Ensure dotenv is loaded
-const staticRoutes = require("./routes/static"); // Rename for clarity
+const path = require("path");
+require("dotenv").config(); // Load environment variables
 
+const staticRoutes = require("./routes/static"); // Serve static content
+
+/* ***********************
+ * 2. App Configuration
+ *************************/
 const app = express();
 
-/* ***********************
- * View Engine and Templates
- *************************/
+// Set EJS as the templating engine
 app.set("view engine", "ejs");
 app.use(expressLayouts);
-app.set("layout", "./layouts/layout"); // Layout file location
+app.set("layout", "./layouts/layout"); // Define default layout
+
+// Serve static files (CSS, Images, JS)
+app.use(express.static(path.join(__dirname, "public")));
 
 /* ***********************
- * Middleware for Static Files
+ * 3. Middleware and Routes
  *************************/
-app.use(staticRoutes); // Serve static files
+// Load static routes (home, about, contact, etc.)
+app.use(staticRoutes);
 
-/* ***********************
- * Routes
- *************************/
 // Home Route
 app.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
 
 /* ***********************
- * Server Configuration
+ * 4. Server Configuration
  *************************/
-const PORT = process.env.PORT || 5500; // Use Render's dynamic PORT
+const PORT = process.env.PORT || 5500; // Use dynamic port for Render
 app.listen(PORT, () => {
-  console.log(`🚀 App listening on port ${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
