@@ -1,6 +1,101 @@
-/******* Change Box Model ***************/
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+header {
+  background: #222;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.account {
+  color: white;
+  text-decoration: none;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.hero {
+  padding: 20px;
+  text-align: center;
+}
+
+.hero img {
+  width: 100%;
+  max-width: 400px;
+}
+
+.btn {
+  display: inline-block;
+  background: blue;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.reviews ul {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.upgrade-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.upgrade-item {
+  margin: 10px;
+  text-align: center;
+}
+
+.upgrade-item img {
+  width: 80px;
+}
+@media screen and (min-width: 768px) {
+  .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+  }
+
+  .hero img {
+      max-width: 500px;
+  }
+
+  .upgrade-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+  }
+
+  .upgrade-item img {
+      width: 100px;
+  }
 }
