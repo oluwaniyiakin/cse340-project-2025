@@ -1,13 +1,15 @@
 /* General Styles */
 body {
   font-family: Arial, sans-serif;
-  color: #333;
+  color: #222; /* Darkened text for better contrast */
+  background-color: #f9f9f9;
   margin: 0;
   padding: 0;
 }
 
 h1, h2 {
   text-align: center;
+  color: #111; /* Darker heading color */
 }
 
 /* Hero Section */
@@ -16,7 +18,7 @@ h1, h2 {
   justify-content: space-between;
   align-items: center;
   padding: 40px;
-  background: #f4f4f4;
+  background: #e0e0e0; /* Slightly darker for contrast */
 }
 
 .hero-text {
@@ -25,10 +27,11 @@ h1, h2 {
 
 .hero-text h1 {
   font-size: 2em;
+  color: #111; /* Improved contrast */
 }
 
 .hero-text h2 {
-  color: #0073e6;
+  color: #005bb5; /* Darker blue for better contrast */
 }
 
 .hero-text ul {
@@ -41,17 +44,24 @@ h1, h2 {
   margin: 5px 0;
 }
 
+/* CTA Button */
 .cta-button {
   display: inline-block;
-  background: #0073e6;
-  color: white;
-  padding: 10px 20px;
+  background: #005bb5; /* Darker blue for better contrast */
+  color: #fff;
+  padding: 12px 22px;
   text-decoration: none;
   border-radius: 5px;
   font-size: 1.2em;
   margin-top: 10px;
+  font-weight: bold;
 }
 
+.cta-button:hover {
+  background: #004494; /* Slightly darker on hover */
+}
+
+/* Hero Image */
 .hero-image img {
   max-width: 100%;
   height: auto;
@@ -76,7 +86,7 @@ h1, h2 {
 /* Upgrades Section */
 .upgrades {
   padding: 20px;
-  background: #eee;
+  background: #ddd; /* Increased contrast */
 }
 
 .upgrades h2 {
@@ -105,15 +115,20 @@ h1, h2 {
 .upgrade-item a {
   display: block;
   margin-top: 5px;
-  text-decoration: none;
-  color: #0073e6;
+  text-decoration: underline; /* Underlined for accessibility */
+  color: #004494; /* Darker link color */
+  font-weight: bold;
+}
+
+.upgrade-item a:hover {
+  color: #003377;
 }
 
 /* Footer */
 footer {
   text-align: center;
   padding: 10px;
-  background: #333;
+  background: #222;
   color: white;
   margin-top: 20px;
 }
@@ -133,6 +148,7 @@ footer {
       grid-template-columns: 1fr;
   }
 }
+
 /* Mobile Navigation */
 #navToggle {
   display: none;
