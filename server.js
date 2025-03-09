@@ -11,7 +11,8 @@ const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 require("dotenv").config(); // Load environment variables
 
-const staticRoutes = require("./routes/static"); // Serve static content
+// Import Routes
+const staticRoutes = require("./routes/static"); // Static routes (home, about, etc.)
 
 /* ***********************
  * 2. App Configuration
@@ -38,7 +39,22 @@ app.get("/", (req, res) => {
 });
 
 /* ***********************
- * 4. Server Configuration
+ * 4. Error Handling Middleware
+ *************************/
+
+// 404 Page Not Found Handler
+app.use((req, res, next) => {
+  res.status(404).render("404", { title: "Page Not Found" });
+});
+
+// Global Error Handler (Catches Server Errors)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("500", { title: "Server Error" });
+});
+
+/* ***********************
+ * 5. Server Configuration
  *************************/
 const PORT = process.env.PORT || 5500; // Use dynamic port for Render
 app.listen(PORT, () => {
