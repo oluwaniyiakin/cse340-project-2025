@@ -13,6 +13,7 @@ require("dotenv").config(); // Load environment variables
 
 // Import Routes
 const staticRoutes = require("./routes/static"); // Static routes (home, about, etc.)
+const baseController = require("./controllers/baseController"); // Import base controller
 
 /* ***********************
  * 2. App Configuration
@@ -33,10 +34,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // Load static routes (home, about, contact, etc.)
 app.use(staticRoutes);
 
-// Home Route
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
-});
+// Home Route (Updated to use baseController)
+app.get("/", baseController.buildHome);
 
 /* ***********************
  * 4. Error Handling Middleware
