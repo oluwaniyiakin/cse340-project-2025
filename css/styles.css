@@ -189,3 +189,29 @@ nav ul {
       display: flex;
   }
 }
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+}
+
+.inventory-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.inventory-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  width: 250px;
+  text-align: center;
+  border-radius: 5px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.inventory-item:hover {
+  transform: scale(1.05);
+}

@@ -189,3 +189,31 @@ nav ul {
       display: flex;
   }
 }
+
+.vehicle-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.vehicle-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.vehicle-detail img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 5px;
+}
+
+.vehicle-info {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .vehicle-content {
+      flex-direction: column;
+  }
+}

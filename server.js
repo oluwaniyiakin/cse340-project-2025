@@ -12,8 +12,9 @@ const path = require("path");
 require("dotenv").config(); // Load environment variables
 
 // Import Routes
-const staticRoutes = require("./routes/static"); // Static routes (home, about, etc.)
-const baseController = require("./controllers/baseController"); // Import base controller
+const staticRoutes = require("./routes/static"); // Static pages (home, about, etc.)
+const inventoryRoutes = require("./routes/inventory"); // Inventory management routes
+const baseController = require("./controllers/baseController"); // Base controller
 
 /* ***********************
  * 2. App Configuration
@@ -25,17 +26,27 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "./layouts/layout"); // Define default layout
 
+// Middleware to parse request body data
+app.use(express.json()); // Parse JSON requests
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
+
 // Serve static files (CSS, Images, JS)
 app.use(express.static(path.join(__dirname, "public")));
 
 /* ***********************
  * 3. Middleware and Routes
  *************************/
+
 // Load static routes (home, about, contact, etc.)
 app.use(staticRoutes);
 
 // Home Route (Updated to use baseController)
-app.get("/", baseController.buildHome);
+const mainRoutes = require("./routes"); // Import main routes
+app.use("/", mainRoutes); // Use main routes
+
+
+// Inventory Routes
+app.use("/inv", inventoryRoutes);
 
 /* ***********************
  * 4. Error Handling Middleware
@@ -43,19 +54,26 @@ app.get("/", baseController.buildHome);
 
 // 404 Page Not Found Handler
 app.use((req, res, next) => {
-  res.status(404).render("404", { title: "Page Not Found" });
+  res.status(404).render("errors/404", { title: "Page Not Found" });
 });
 
 // Global Error Handler (Catches Server Errors)
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).render("500", { title: "Server Error" });
+  console.error("🔥 ERROR:", err.stack);
+  
+  // Check if the request is for an API endpoint
+  if (req.headers["content-type"] === "application/json") {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+  
+  res.status(500).render("errors/500", { title: "Server Error" });
 });
 
 /* ***********************
  * 5. Server Configuration
  *************************/
 const PORT = process.env.PORT || 5500; // Use dynamic port for Render
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
