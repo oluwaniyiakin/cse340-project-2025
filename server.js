@@ -6,18 +6,19 @@
 /* ***********************
  * 1. Require Statements
  *************************/
-require("dotenv").config();
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
-
+require("dotenv").config(); // Load environment variables
 
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
-require("dotenv").config(); // Load environment variables
+
+// Import database connection
+const pool = require("./database");
 
 // Import Routes
 const staticRoutes = require("./routes/static"); // Static pages (home, about, etc.)
 const inventoryRoutes = require("./routes/inventory"); // Inventory management routes
+const mainRoutes = require("./routes"); // Main application routes
 const baseController = require("./controllers/baseController"); // Base controller
 
 /* ***********************
@@ -45,9 +46,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(staticRoutes);
 
 // Home Route (Updated to use baseController)
-const mainRoutes = require("./routes"); // Import main routes
 app.use("/", mainRoutes); // Use main routes
-
 
 // Inventory Routes
 app.use("/inv", inventoryRoutes);
@@ -65,16 +64,29 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error("🔥 ERROR:", err.stack);
   
-  // Check if the request is for an API endpoint
-  if (req.headers["content-type"] === "application/json") {
+  // Check if the request expects JSON
+  if (req.accepts("json")) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
-  
+
   res.status(500).render("errors/500", { title: "Server Error" });
 });
 
 /* ***********************
- * 5. Server Configuration
+ * 5. Database Connection Test
+ *************************/
+async function testDatabaseConnection() {
+  try {
+    const result = await pool.query("SELECT 1");
+    console.log("✅ Database Connection Successful!");
+  } catch (error) {
+    console.error("❌ Database Connection Failed!", error);
+  }
+}
+testDatabaseConnection();
+
+/* ***********************
+ * 6. Server Configuration
  *************************/
 const PORT = process.env.PORT || 5500; // Use dynamic port for Render
 
