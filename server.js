@@ -6,6 +6,10 @@
 /* ***********************
  * 1. Require Statements
  *************************/
+require("dotenv").config();
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
+
+
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
