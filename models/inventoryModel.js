@@ -4,18 +4,23 @@ const pool = require("../database");
  * 1️⃣ Get all vehicle classifications
  *************************/
 async function getClassifications() {
-  try {
-      const result = await pool.query(
-          "SELECT classification_id, classification_name FROM classification ORDER BY classification_name;"
-      );
+    try {
+        const result = await pool.query(
+            "SELECT classification_id, classification_name FROM classification ORDER BY classification_name;"
+        );
 
-      console.log("🟢 Retrieved Classifications:", result.rows);
+        console.log("🟢 Retrieved Classifications:", result.rows);
 
-      return result.rows;
-  } catch (error) {
-      console.error("❌ Error fetching classifications:", error.message);
-      throw error;
-  }
+        if (result.rows.length === 0) {
+            console.warn("⚠️ Warning: No classifications found in the database.");
+            return [];
+        }
+
+        return result.rows;
+    } catch (error) {
+        console.error("❌ Error fetching classifications:", error.message);
+        throw error;
+    }
 }
 
 /* ***********************

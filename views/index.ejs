@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title><%= title || 'Home' %> | CSE Motors</title>
     <%- include('partials/head') %>
 </head>
@@ -9,7 +10,7 @@
     <%- include('partials/header') %>
     <%- include('partials/nav') %>
 
-    <main>
+    <main role="main">
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-text">
@@ -20,10 +21,10 @@
                     <li>✔ Superman Doors</li>
                     <li>✔ Fuzzy Dice</li>
                 </ul>
-                <a href="#" class="cta-button">Own Today</a>
+                <button class="cta-button">Own Today</button>
             </div>
             <div class="hero-image">
-                <img src="/images/vehicles/delorean.jpg" alt="DMC DeLorean">
+                <img src="/images/vehicles/delorean.jpg" alt="DMC DeLorean sports car">
             </div>
         </section>
 
@@ -52,8 +53,8 @@
 
                 <% upgrades.forEach(upgrade => { %>
                     <div class="upgrade-item">
-                        <img src="<%= upgrade.img %>" alt="<%= upgrade.name %>">
-                        <a href="#"><%= upgrade.name %></a>
+                        <img src="<%= upgrade.img %>" alt="<%= upgrade.name %> upgrade">
+                        <button><%= upgrade.name %></button>
                     </div>
                 <% }); %>
             </div>
