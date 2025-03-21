@@ -3,8 +3,8 @@ const utilities = require("../utilities");
 
 async function getVehicleDetail(req, res, next) {
     try {
-        const inv_id = req.params.inv_id; // Ensure this matches your route parameter
-        const vehicle = await inventoryModel.getVehicleById(inv_id);
+      const inv_id = req.params.inventory_id;
+        const vehicle = await inventoryModel.getVehicleById(inventory_id);
 
         if (!vehicle) {
             return res.status(404).render("error", { 
