@@ -29,7 +29,7 @@ async function getClassifications() {
 async function getInventoryByClassification(classification_id) {
     try {
         const result = await pool.query(
-            `SELECT inventory_id, classification_id, inv_make, inv_model, inv_year, inv_price, inv_mileage, inv_description, inv_image 
+            `SELECT inventory_id, classification_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_description, inv_image 
              FROM inventory 
              WHERE classification_id = $1 
              ORDER BY inv_year DESC, inv_make, inv_model;`,
@@ -48,7 +48,7 @@ async function getInventoryByClassification(classification_id) {
 async function getVehicleById(inv_id) {
     try {
         const vehicleResult = await pool.query(
-            `SELECT inventory_id, classification_id, inv_make, inv_model, inv_year, inv_price, inv_mileage, inv_description, inv_image 
+            `SELECT inventory_id, classification_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_description, inv_image 
              FROM inventory WHERE inventory_id = $1;`,
             [inv_id]
         );
@@ -73,13 +73,13 @@ async function getVehicleById(inv_id) {
 /* ***********************
  * 4️⃣ Add a new vehicle
  *************************/
-async function addVehicle({ classification_id, make, model, year, price, mileage, description, image_url }) {
+async function addVehicle({ classification_id, make, model, year, price, miles, description, image_url }) {
     try {
         const result = await pool.query(
-            `INSERT INTO inventory (classification_id, inv_make, inv_model, inv_year, inv_price, inv_mileage, inv_description, inv_image)
+            `INSERT INTO inventory (classification_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_description, inv_image)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
              RETURNING *;`,
-            [classification_id, make, model, year, price, mileage, description, image_url]
+            [classification_id, make, model, year, price, miles, description, image_url]
         );
         return result.rows[0];
     } catch (error) {
@@ -91,7 +91,7 @@ async function addVehicle({ classification_id, make, model, year, price, mileage
 /* ***********************
  * 5️⃣ Update an existing vehicle
  *************************/
-async function updateVehicle(inv_id, { classification_id, make, model, year, price, mileage, description, image_url }) {
+async function updateVehicle(inv_id, { classification_id, make, model, year, price, miles, description, image_url }) {
     try {
         const result = await pool.query(
             `UPDATE inventory
