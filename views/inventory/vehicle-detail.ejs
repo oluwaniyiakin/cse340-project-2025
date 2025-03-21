@@ -3,9 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %> | CSE Motors</title>
     <link rel="stylesheet" href="/css/styles.css">
     <script defer src="/js/vehicleDetail.js"></script>
+    <style>
+        .vehicle-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .vehicle-image {
+            max-width: 50%;
+            text-align: center;
+        }
+        .vehicle-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .thumbnail-slider {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .thumbnail:hover {
+            transform: scale(1.1);
+        }
+        .vehicle-info {
+            max-width: 45%;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .vehicle-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .vehicle-actions button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .vehicle-actions button:hover {
+            background: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .vehicle-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .vehicle-image, .vehicle-info {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -13,37 +85,37 @@
         <h1><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h1>
     </header>
 
-    <main class="vehicle-detail">
+    <main class="vehicle-container">
         <!-- Vehicle Image Display -->
         <div class="vehicle-image">
             <img id="main-image" src="<%= vehicle.fullsize_image %>" alt="<%= vehicle.make %> <%= vehicle.model %>">
-        </div>
-
-        <!-- Thumbnail Slider -->
-        <div class="thumbnail-slider">
-            <% vehicle.images.forEach(image => { %>
-                <img class="thumbnail" src="<%= image %>" alt="Thumbnail" onclick="updateMainImage('<%= image %>')">
-            <% }); %>
+            
+            <!-- Thumbnail Slider -->
+            <div class="thumbnail-slider">
+                <% vehicle.images.forEach(image => { %>
+                    <img class="thumbnail" src="<%= image %>" alt="Thumbnail" onclick="updateMainImage('<%= image %>')">
+                <% }); %>
+            </div>
         </div>
 
         <!-- Vehicle Details -->
         <div class="vehicle-info">
-            <h2><%= vehicle.price %></h2>
-            <p><strong>Mileage:</strong> <%= vehicle.mileage %> miles</p>
+            <p class="price">Price: $<%= vehicle.price.toLocaleString() %></p>
+            <p><strong>Mileage:</strong> <%= vehicle.mileage.toLocaleString() %> miles</p>
             <p><strong>Fuel Type:</strong> <%= vehicle.fuel_type %></p>
             <p><strong>Transmission:</strong> <%= vehicle.transmission %></p>
             <p><strong>Drivetrain:</strong> <%= vehicle.drivetrain %></p>
             <p><strong>Exterior Color:</strong> <%= vehicle.ext_color %></p>
             <p><strong>Interior Color:</strong> <%= vehicle.int_color %></p>
             <p><strong>VIN:</strong> <%= vehicle.vin %></p>
-        </div>
 
-        <!-- Action Buttons -->
-        <div class="vehicle-actions">
-            <button>Start My Purchase</button>
-            <button>Contact Us</button>
-            <button>Schedule Test Drive</button>
-            <button>Apply for Financing</button>
+            <!-- Action Buttons -->
+            <div class="vehicle-actions">
+                <button>Start My Purchase</button>
+                <button>Contact Us</button>
+                <button>Schedule Test Drive</button>
+                <button>Apply for Financing</button>
+            </div>
         </div>
     </main>
 

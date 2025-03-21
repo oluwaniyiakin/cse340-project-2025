@@ -7,15 +7,24 @@ async function getVehicleDetail(req, res, next) {
         const vehicle = await inventoryModel.getVehicleById(inv_id);
 
         if (!vehicle) {
-            return res.status(404).render("error", { message: "Vehicle not found" });
+            return res.status(404).render("error", { 
+                title: "Vehicle Not Found", 
+                message: "Sorry, the vehicle you're looking for does not exist." 
+            });
         }
 
-        // Generate HTML for the vehicle details using the utility function
-        const vehicleHTML = utilities.buildVehicleHTML(vehicle);
+        // Format price as US dollars
+        vehicle.price = new Intl.NumberFormat("en-US", { 
+            style: "currency", 
+            currency: "USD" 
+        }).format(vehicle.price);
 
-        res.render("inventory/detail", {
-            title: `${vehicle.make} ${vehicle.model}`,
-            vehicleHTML,
+        // Format mileage with commas
+        vehicle.mileage = new Intl.NumberFormat("en-US").format(vehicle.mileage);
+
+        res.render("inventory/vehicle-detail", {
+            title: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+            vehicle,
         });
 
     } catch (error) {

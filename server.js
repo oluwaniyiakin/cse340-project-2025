@@ -17,7 +17,7 @@ const pool = require("./database");
 
 // Import Routes
 const staticRoutes = require("./routes/static"); // Static pages (home, about, etc.)
-const inventoryRoutes = require("./routes/inventory"); // Inventory management routes
+const inventoryRoutes = require("./routes/inventoryRoutes");
 const mainRoutes = require("./routes"); // Main application routes
 const baseController = require("./controllers/baseController"); // Base controller
 
@@ -49,7 +49,7 @@ app.use(staticRoutes);
 app.use("/", mainRoutes); // Use main routes
 
 // Inventory Routes
-app.use("/inv", inventoryRoutes);
+app.use("/inventory", inventoryRoutes);
 
 /* ***********************
  * 4. Error Handling Middleware
