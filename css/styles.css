@@ -61,10 +61,11 @@ h1, h2 {
   background: #004494; /* Slightly darker on hover */
 }
 
-/* Hero Image */
+/* Hero Image - Fix for image display */
 .hero-image img {
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
 /* Reviews Section */
@@ -108,6 +109,22 @@ h1, h2 {
 .upgrade-item img {
   width: 100px;
   height: auto;
+  display: block;
+  margin: auto;
+}
+
+/* Fix for Images Not Displaying */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure images load from correct path */
+.vehicle-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
   display: block;
   margin: auto;
 }
@@ -190,6 +207,7 @@ nav ul {
   }
 }
 
+/* Inventory Grid */
 h1 {
   text-align: center;
   font-size: 2rem;
