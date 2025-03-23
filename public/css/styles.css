@@ -217,3 +217,38 @@ nav ul {
       flex-direction: column;
   }
 }
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 0;
+  text-align: center;
+}
+
+.vehicle-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.vehicle-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 250px;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+.vehicle-card img {
+  width: 100%;
+  height: auto;
+}
+
+a {
+  display: block;
+  margin-top: 10px;
+  text-decoration: none;
+  color: #007BFF;
+  font-weight: bold;
+}

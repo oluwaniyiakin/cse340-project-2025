@@ -1,8 +1,14 @@
-const pool = require("../config/database"); // Import your DB connection
+const db = require("../config/database");
 
-async function getAllVehicles() {
-    const result = await pool.query("SELECT * FROM vehicles"); // Fetch from DB
-    return result.rows; // Return all vehicles
+// Function to get all vehicles
+function getAllVehicles() {
+    return db.readData();
 }
 
-module.exports = { getAllVehicles };
+// Function to get a single vehicle by ID
+function getVehicleById(id) {
+    const vehicles = db.readData();
+    return vehicles.find(vehicle => vehicle.id == id);
+}
+
+module.exports = { getAllVehicles, getVehicleById };

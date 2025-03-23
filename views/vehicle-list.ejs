@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle List</title>
+    <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body>
+    <h1>Available Vehicles</h1>
+    <div class="vehicle-container">
+        <% vehicles.forEach(vehicle => { %>
+            <div class="vehicle-card">
+                <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>">
+                <h2><%= vehicle.name %></h2>
+                <p>Price: $<%= vehicle.price.toLocaleString() %></p>
+                <a href="/vehicles/<%= vehicle.id %>">View Details</a>
+            </div>
+        <% }); %>
+    </div>
+</body>
+</html>
