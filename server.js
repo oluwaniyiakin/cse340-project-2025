@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path"); // Ensure static file serving
-const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import routes correctly
+const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import vehicle routes
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,16 +8,19 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json()); // ✅ Parses JSON
 app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded data
-
-// Serve static files (Ensure images load properly)
 app.use(express.static(path.join(__dirname, "public"))); // ✅ Ensure images load from /public
 
-// Routes
-app.use("/vehicles", vehicleRoutes); // ✅ Use routes correctly
+// Set view engine to EJS (Make sure you have EJS installed)
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views")); // Ensure correct views folder
 
-// Default Route
+// Routes
+app.use("/vehicles", vehicleRoutes); // ✅ Vehicle Routes
+
+// Home Page Route (Displays Vehicles List)
 app.get("/", (req, res) => {
-    res.send("Welcome to the Vehicle API! Use /vehicles to get started.");
+    const vehicles = require("./data/vehicles.json"); // ✅ Load vehicle data
+    res.render("vehicle-list", { vehicles }); // ✅ Render vehicle list view
 });
 
 // Error Handling Middleware
