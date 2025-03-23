@@ -43,7 +43,7 @@ async function getVehicleDetails(req, res) {
         });
 
     } catch (error) {
-        console.error("❌ Error in getVehicleDetails:", error);
+        console.error("❌ ErM ror in getVehicleDetails:", error);
         res.status(500).render("error", { 
             title: "Server Error", 
             message: "An unexpected error occurred. Please try again later.", 

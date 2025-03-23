@@ -1,11 +1,12 @@
-<%- include('../partials/header.ejs') %>
-
-<main>
-  <h1><%= title %></h1>
-  <p><%= message %></p>
-
-  <p>It seems like something went wrong. Maybe try going <a href="/">home</a>?</p>
-  <img src="/images/error.png" alt="Error image" width="300">
-</main>
-
-<%- include('../partials/footer.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+</head>
+<body>
+    <h1>Oops! Something went wrong.</h1>
+    <p><%= message %></p>
+</body>
+</html>

@@ -1,8 +1,9 @@
 const inventoryModel = require("../models/inventoryModel");
 const utilities = require("../utilities");
-const fs = require("fs"); // For checking existing images
+const path = require("path"); 
+const fs = require("fs");
 
-// Get all vehicles and set the first one as default
+// ✅ Get all vehicles and set the first one as default
 async function getVehicleDetails(req, res) {
     try {
         console.log("🔍 Fetching all vehicles...");
@@ -22,8 +23,9 @@ async function getVehicleDetails(req, res) {
         let selectedVehicle = vehicles[0];
 
         // If a specific vehicle ID is provided, fetch that one
-        if (req.params.inventory_id) {
-            const vehicle = vehicles.find(v => v.inv_id === parseInt(req.params.inventory_id));
+        const vehicleId = parseInt(req.params.inventory_id, 10);
+        if (!isNaN(vehicleId)) {
+            const vehicle = vehicles.find(v => v.inv_id === vehicleId);
             if (vehicle) selectedVehicle = vehicle;
         }
 
@@ -56,14 +58,20 @@ async function getVehicleDetails(req, res) {
 function getVehicleImage(model) {
     if (!model) return "/images/vehicles/no-image.png"; // Fallback for missing model
     const imagePath = `/images/vehicles/${model.toLowerCase()}.png`;
-    return fs.existsSync(`public${imagePath}`) ? imagePath : "/images/vehicles/no-image.png";
+    return fileExists(imagePath) ? imagePath : "/images/vehicles/no-image.png";
 }
 
 // ✅ Function to get vehicle thumbnail path with a fallback
 function getVehicleThumbnail(model) {
     if (!model) return "/images/vehicles/no-image-tn.png"; // Fallback for missing model
     const thumbnailPath = `/images/vehicles/${model.toLowerCase()}-tn.png`;
-    return fs.existsSync(`public${thumbnailPath}`) ? thumbnailPath : "/images/vehicles/no-image-tn.png";
+    return fileExists(thumbnailPath) ? thumbnailPath : "/images/vehicles/no-image-tn.png";
+}
+
+// ✅ Helper function to check if a file exists
+function fileExists(relativePath) {
+    const absolutePath = path.join(__dirname, "../public", relativePath);
+    return fs.existsSync(absolutePath);
 }
 
 module.exports = { getVehicleDetails };
