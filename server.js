@@ -1,24 +1,32 @@
 const express = require("express");
-const path = require("path");
+const path = require("path"); // Ensure static file serving
+const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import routes correctly
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Set the view engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+// Middleware
+app.use(express.json()); // ✅ Parses JSON
+app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded data
 
-// Serve static files
-app.use("/public", express.static(path.join(__dirname, "public")));
+// Serve static files (Ensure images load properly)
+app.use(express.static(path.join(__dirname, "public"))); // ✅ Ensure images load from /public
 
 // Routes
-const vehicleRoutes = require("./routes/vehicleRoutes");
-app.use("/vehicles", vehicleRoutes);
+app.use("/vehicles", vehicleRoutes); // ✅ Use routes correctly
 
-// Home route
+// Default Route
 app.get("/", (req, res) => {
-    res.redirect("/vehicles");
+    res.send("Welcome to the Vehicle API! Use /vehicles to get started.");
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: "Internal Server Error" });
+});
+
+// Start Server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

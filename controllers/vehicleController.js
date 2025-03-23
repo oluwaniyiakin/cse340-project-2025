@@ -1,17 +1,15 @@
-const vehicleModel = require("../models/vehicleModel");
+const vehicles = require("../data/vehicles.json"); // ✅ Load vehicle data
 
-// ✅ Function to get all vehicles
+// Get all vehicles
 exports.getAllVehicles = (req, res) => {
-    const vehicles = vehicleModel.getAllVehicles();
-    res.render("vehicles", { vehicles });
+    res.json(vehicles);
 };
 
-// ✅ Function to get a specific vehicle by ID
+// Get vehicle by ID
 exports.getVehicleById = (req, res) => {
-    const vehicle = vehicleModel.getVehicleById(req.params.id);
+    const vehicle = vehicles.find(v => v.id === parseInt(req.params.id));
     if (!vehicle) {
-        return res.status(404).send("Vehicle not found");
+        return res.status(404).json({ error: "Vehicle not found" });
     }
-    const allVehicles = vehicleModel.getAllVehicles();
-    res.render("vehicle-details", { vehicle, allVehicles });
+    res.json(vehicle);
 };
