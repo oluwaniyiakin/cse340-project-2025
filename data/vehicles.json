@@ -12,7 +12,7 @@
       "transmission": "Automatic",
       "stockNumber": "FT001",
       "VIN": "1FT8W3DT7GEC12345",
-      "image": "/public/images/vehicles/fire-truck.png"
+      "image": "/images/vehicles/fire-truck.png"
     },
     {
       "id": 2,
@@ -27,8 +27,8 @@
       "transmission": "Manual",
       "stockNumber": "MT002",
       "VIN": "3B7KF23Z0WM123456",
-      "image": "/public/images/vehicles/monster-truck.png",
-      "thumbnail": "/public/images/vehicles/monster-truck-tn.png"
+      "image": "/images/vehicles/monster-truck.png",
+      "thumbnail": "/images/vehicles/monster-truck-tn.png"
     },
     {
       "id": 3,
@@ -43,8 +43,8 @@
       "transmission": "Automatic",
       "stockNumber": "MV003",
       "VIN": "2GCEK19TXW1234567",
-      "image": "/public/images/vehicles/mystery-van.png",
-      "thumbnail": "/public/images/vehicles/mystery-van-tn.png"
+      "image": "/images/vehicles/mystery-van.png",
+      "thumbnail": "/images/vehicles/mystery-van-tn.png"
     },
     {
       "id": 4,
@@ -59,8 +59,8 @@
       "transmission": "Automatic",
       "stockNumber": "SV004",
       "VIN": "1GNEK13ZX3R123456",
-      "image": "/public/images/vehicles/survan.png",
-      "thumbnail": "/public/images/vehicles/survan-tn.png"
+      "image": "/images/vehicles/survan.png",
+      "thumbnail": "/images/vehicles/survan-tn.png"
     },
     {
       "id": 5,
@@ -75,8 +75,8 @@
       "transmission": "Manual",
       "stockNumber": "WR005",
       "VIN": "1J4FA39S94P123456",
-      "image": "/public/images/vehicles/wrangler.png",
-      "thumbnail": "/public/images/vehicles/wrangler-tn.png"
+      "image": "/images/vehicles/wrangler.png",
+      "thumbnail": "/vehicles/wrangler-tn.png"
     },
     {
       "id": 6,
@@ -91,8 +91,8 @@
       "transmission": "Automatic",
       "stockNumber": "NI006",
       "VIN": "JH4KA7650NC123456",
-      "image": "/public/images/vehicles/no-image.png",
-      "thumbnail": "/public/images/vehicles/no-image-tn.png"
+      "image": "/images/vehicles/no-image.png",
+      "thumbnail": "/vehicles/no-image-tn.png"
     }
   ]
   

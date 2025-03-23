@@ -1,19 +1,17 @@
 const vehicleModel = require("../models/vehicleModel");
 
-function vehicleList(req, res) {
+// Controller to render all vehicles
+exports.getAllVehicles = (req, res) => {
     const vehicles = vehicleModel.getAllVehicles();
-    res.render("vehicle-list", { vehicles });
-}
+    res.render("vehicles", { vehicles });
+};
 
-function vehicleDetail(req, res) {
-    const vehicleId = req.params.id;
-    const vehicle = vehicleModel.getVehicleById(vehicleId);
-
+// Controller to render details of a single vehicle
+exports.getVehicleById = (req, res) => {
+    const vehicle = vehicleModel.getVehicleById(req.params.id);
     if (!vehicle) {
         return res.status(404).send("Vehicle not found");
     }
-
-    res.render("vehicle-detail", { vehicle });
-}
-
-module.exports = { vehicleList, vehicleDetail };
+    const allVehicles = vehicleModel.getAllVehicles();
+    res.render("vehicle-details", { vehicle, allVehicles });
+};
