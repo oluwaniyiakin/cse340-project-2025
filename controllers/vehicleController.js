@@ -1,12 +1,12 @@
 const vehicleModel = require("../models/vehicleModel");
 
-// Controller to render all vehicles
+// ✅ Function to get all vehicles
 exports.getAllVehicles = (req, res) => {
     const vehicles = vehicleModel.getAllVehicles();
     res.render("vehicles", { vehicles });
 };
 
-// Controller to render details of a single vehicle
+// ✅ Function to get a specific vehicle by ID
 exports.getVehicleById = (req, res) => {
     const vehicle = vehicleModel.getVehicleById(req.params.id);
     if (!vehicle) {

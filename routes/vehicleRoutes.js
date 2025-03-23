@@ -1,11 +1,11 @@
-const express = require("express");
-const router = express.Router();
-const vehicleController = require("../controllers/vehicleController");
+const vehicles = require("../data/vehicles.json");
 
-// Route to display all vehicles
-router.get("/", vehicleController.vehicleList);
+// ✅ Function to get all vehicles
+exports.getAllVehicles = () => {
+    return vehicles;
+};
 
-// Route to display vehicle details
-router.get("/:id", vehicleController.vehicleDetail);
-
-module.exports = router;
+// ✅ Function to get a single vehicle by ID
+exports.getVehicleById = (id) => {
+    return vehicles.find(vehicle => vehicle.id.toString() === id);
+};
