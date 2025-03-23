@@ -1,5 +1,6 @@
 const express = require("express");
-const path = require("path"); 
+const path = require("path");
+const fs = require("fs");
 const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import vehicle routes
 
 const app = express();
@@ -9,15 +10,16 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json()); // Parses JSON
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
 
-// ✅ Static File Serving (CSS, Images, JS)
+// ✅ Serve Static Files (CSS, Images, JS)
 app.use(express.static(path.join(__dirname, "public")));
 
 // ✅ Set View Engine to EJS
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views")); 
+app.set("views", path.join(__dirname, "views"));
 
-// ✅ Routes
+// ✅ Vehicle Routes
 app.use("/vehicles", vehicleRoutes);
+
 
 // ✅ Home Page Route (Displays Vehicle List)
 app.get("/", (req, res) => {
@@ -30,18 +32,21 @@ app.get("/", (req, res) => {
     }
 });
 
-// ✅ 404 Page Not Found Middleware
+
+// ✅ 404 Error Handling (Page Not Found)
 app.use((req, res) => {
-    res.status(404).send("Page Not Found");
+    res.status(404).render("404", { message: "Page Not Found" });
 });
 
 // ✅ Global Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("❌ Server Error:", err.stack);
+    res.status(500).render("500", { message: "Internal Server Error" });
 });
 
 // ✅ Start Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+
