@@ -28,7 +28,7 @@
         <div class="vehicle-container">
             <% vehicles.forEach(vehicle => { %>
                 <div class="vehicle-card">
-                    <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>">
+                    <img src="/images/vehicles/<%= vehicle.image %>" alt="<%= vehicle.name %>">
                     <h3><%= vehicle.name %></h3>
                     <p>Price: $<%= vehicle.price.toLocaleString() %></p>
                     <a class="details-btn" href="/vehicles/<%= vehicle.id %>">View Details</a>
