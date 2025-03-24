@@ -12,7 +12,8 @@
       "transmission": "Automatic",
       "stockNumber": "FT001",
       "VIN": "1FT8W3DT7GEC12345",
-      "image": "/images/vehicles/fire-truck.JPG"
+      "image": "/images/vehicles/fire-truck.JPG",
+      "thumbnail": "/images/vehicles/fire-truck-tn.JPG"
     },
     {
       "id": 2,
@@ -107,8 +108,8 @@
       "transmission": "Automatic",
       "stockNumber": "TS007",
       "VIN": "5YJSA1E29LF123456",
-      "image": "/images/vehicles/camaro.JPG",
-      "thumbnail": "/images/vehicles/camaro-tn.JPG"
+      "image": "/images/vehicles/tesla-model-s.JPG",
+      "thumbnail": "/images/vehicles/tesla-model-s-tn.JPG"
     },
     {
       "id": 8,
@@ -123,8 +124,8 @@
       "transmission": "Manual",
       "stockNumber": "FM008",
       "VIN": "1FA6P8CF0M5123456",
-      "image": "/images/vehicles/aerocar.JPG",
-      "thumbnail": "/images/vehicles/aerocar-tn.JPG"
+      "image": "/images/vehicles/ford-mustang-gt.JPG",
+      "thumbnail": "/images/vehicles/ford-mustang-gt-tn.JPG"
     },
     {
       "id": 9,
@@ -139,8 +140,8 @@
       "transmission": "Automatic",
       "stockNumber": "CS009",
       "VIN": "3GCUYDED2NG123456",
-      "image": "/images/vehicles/adventador.JPG",
-      "thumbnail": "/images/vehicles/adventador-tn.JPG"
+      "image": "/images/vehicles/chevrolet-silverado-1500.JPG",
+      "thumbnail": "/images/vehicles/chevrolet-silverado-1500-tn.JPG"
     },
     {
       "id": 10,
@@ -155,8 +156,8 @@
       "transmission": "CVT",
       "stockNumber": "HA010",
       "VIN": "1HGCV3F2XMA123456",
-      "image": "/images/vehicles/model-t.JPG",
-      "thumbnail": "/images/model-t-tn.JPG"
+      "image": "/images/vehicles/honda-accord-hybrid.JPG",
+      "thumbnail": "/images/vehicles/honda-accord-hybrid-tn.JPG"
     }
   ]
   
