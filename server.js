@@ -1,95 +1,52 @@
-/******************************************
- * Primary Server File for CSE Motors App
- * Manages Routing, Middleware, and Server Configurations
- ******************************************/
-
-/* ***********************
- * 1. Require Statements
- *************************/
-require("dotenv").config(); // Load environment variables
-
 const express = require("express");
-const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
+const fs = require("fs");
+const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import vehicle routes
 
-// Import database connection
-const pool = require("./database");
-
-// Import Routes
-const staticRoutes = require("./routes/static"); // Static pages (home, about, etc.)
-const inventoryRoutes = require("./routes/inventoryRoutes");
-const mainRoutes = require("./routes"); // Main application routes
-const baseController = require("./controllers/baseController"); // Base controller
-
-/* ***********************
- * 2. App Configuration
- *************************/
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Set EJS as the templating engine
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "./layouts/layout"); // Define default layout
+// ✅ Middleware
+app.use(express.json()); // Parses JSON
+app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
 
-// Middleware to parse request body data
-app.use(express.json()); // Parse JSON requests
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
-
-// Serve static files (CSS, Images, JS)
+// ✅ Serve Static Files (CSS, Images, JS)
 app.use(express.static(path.join(__dirname, "public")));
 
-/* ***********************
- * 3. Middleware and Routes
- *************************/
+// ✅ Set View Engine to EJS
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-// Load static routes (home, about, contact, etc.)
-app.use(staticRoutes);
+// ✅ Vehicle Routes
+app.use("/vehicles", vehicleRoutes);
 
-// Home Route (Updated to use baseController)
-app.use("/", mainRoutes); // Use main routes
 
-// Inventory Routes
-app.use("/inventory", inventoryRoutes);
-
-/* ***********************
- * 4. Error Handling Middleware
- *************************/
-
-// 404 Page Not Found Handler
-app.use((req, res, next) => {
-  res.status(404).render("errors/404", { title: "Page Not Found" });
+// ✅ Home Page Route (Displays Vehicle List)
+app.get("/", (req, res) => {
+    try {
+        const vehicles = require("./data/vehicles.json"); // ✅ Load vehicle data
+        res.render("vehicle-list", { vehicles }); // ✅ Render vehicle list view
+    } catch (error) {
+        console.error("Error loading vehicle data:", error);
+        res.status(500).send("Error loading vehicle data");
+    }
 });
 
-// Global Error Handler (Catches Server Errors)
+
+// ✅ 404 Error Handling (Page Not Found)
+app.use((req, res) => {
+    res.status(404).render("404", { message: "Page Not Found" });
+});
+
+// ✅ Global Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error("🔥 ERROR:", err.stack);
-  
-  // Check if the request expects JSON
-  if (req.accepts("json")) {
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-
-  res.status(500).render("errors/500", { title: "Server Error" });
+    console.error("❌ Server Error:", err.stack);
+    res.status(500).render("500", { message: "Internal Server Error" });
 });
 
-/* ***********************
- * 5. Database Connection Test
- *************************/
-async function testDatabaseConnection() {
-  try {
-    const result = await pool.query("SELECT 1");
-    console.log("✅ Database Connection Successful!");
-  } catch (error) {
-    console.error("❌ Database Connection Failed!", error);
-  }
-}
-testDatabaseConnection();
-
-/* ***********************
- * 6. Server Configuration
- *************************/
-const PORT = process.env.PORT || 5500; // Use dynamic port for Render
-
+// ✅ Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+

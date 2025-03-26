@@ -1,3 +1,48 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.vehicle-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.vehicle-gallery a {
+  text-decoration: none;
+  color: black;
+  text-align: center;
+}
+
+.vehicle-gallery img {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.vehicle-gallery img:hover {
+  transform: scale(1.1);
+}
+
+/* Thumbnail slider */
+.thumbnail-slider {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.thumbnail-slider img {
+  cursor: pointer;
+  border-radius: 5px;
+  transition: opacity 0.3s;
+}
+
+.thumbnail-slider img:hover {
+  opacity: 0.7;
+}
+
 /* General Styles */
 body {
   font-family: Arial, sans-serif;

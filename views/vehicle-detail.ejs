@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= vehicle.name %> Details</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1><%= vehicle.name %></h1>
+    <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>">
+    <p><strong>Price:</strong> $<%= vehicle.price.toLocaleString() %></p>
+    <p><strong>Mileage:</strong> <%= vehicle.mileage.toLocaleString() %> miles</p>
+    <p><strong>Fuel Efficiency:</strong> <%= vehicle.fuelEfficiency.city %> MPG (City) / <%= vehicle.fuelEfficiency.highway %> MPG (Highway)</p>
+    <p><strong>Exterior Color:</strong> <%= vehicle.exteriorColor %></p>
+    <p><strong>Interior Color:</strong> <%= vehicle.interiorColor %></p>
+    <p><strong>Fuel Type:</strong> <%= vehicle.fuelType %></p>
+    <p><strong>Drivetrain:</strong> <%= vehicle.drivetrain %></p>
+    <p><strong>Transmission:</strong> <%= vehicle.transmission %></p>
+    <p><strong>Stock Number:</strong> <%= vehicle.stockNumber %></p>
+    <p><strong>VIN:</strong> <%= vehicle.VIN %></p>
+
+    <a href="/vehicles">Back to Vehicle List</a>
+</body>
+</html>
