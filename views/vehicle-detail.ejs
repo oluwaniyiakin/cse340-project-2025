@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= vehicle.name %> Details</title>
-    <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Detail - <%= vehicle.make %> <%= vehicle.model %></title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1><%= vehicle.name %></h1>
-    <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>">
-    <p><strong>Price:</strong> $<%= vehicle.price.toLocaleString() %></p>
-    <p><strong>Mileage:</strong> <%= vehicle.mileage.toLocaleString() %> miles</p>
-    <p><strong>Fuel Efficiency:</strong> <%= vehicle.fuelEfficiency.city %> MPG (City) / <%= vehicle.fuelEfficiency.highway %> MPG (Highway)</p>
-    <p><strong>Exterior Color:</strong> <%= vehicle.exteriorColor %></p>
-    <p><strong>Interior Color:</strong> <%= vehicle.interiorColor %></p>
-    <p><strong>Fuel Type:</strong> <%= vehicle.fuelType %></p>
-    <p><strong>Drivetrain:</strong> <%= vehicle.drivetrain %></p>
-    <p><strong>Transmission:</strong> <%= vehicle.transmission %></p>
-    <p><strong>Stock Number:</strong> <%= vehicle.stockNumber %></p>
-    <p><strong>VIN:</strong> <%= vehicle.VIN %></p>
+  <div class="vehicle-detail-container">
+    <header>
+      <h1><%= vehicle.make %> <%= vehicle.model %> - <%= vehicle.year %></h1>
+    </header>
 
-    <a href="/vehicles">Back to Vehicle List</a>
+    <!-- Vehicle Info Section -->
+    <section class="vehicle-info">
+      <div class="vehicle-image">
+        <img src="<%= vehicle.image_url %>" alt="<%= vehicle.make %> <%= vehicle.model %>">
+      </div>
+      <div class="vehicle-details">
+        <h2>No-Haggle Price: <%= formatPrice(vehicle.price) %></h2>
+        <p><strong>Mileage:</strong> <%= formatMileage(vehicle.mileage) %></p>
+        <p><strong>Fuel Type:</strong> <%= vehicle.fuel_type %></p>
+        <p><strong>Transmission:</strong> <%= vehicle.transmission %></p>
+        <p><strong>Drivetrain:</strong> <%= vehicle.drivetrain %></p>
+        <p><strong>VIN:</strong> <%= vehicle.vin %></p>
+        <p><strong>Certification and Inspection:</strong> The vehicle has passed inspection by an ASE-certified technician.</p>
+      </div>
+    </section>
+
+    <!-- Gallery Section (Small Images for Click-to-Enlarge) -->
+    <section class="image-gallery">
+      <h3>Image Gallery</h3>
+      <div class="thumbnail-images">
+        <% vehicle.additional_images.forEach(function(image) { %>
+          <img src="<%= image %>" alt="Thumbnail" class="thumbnail" onclick="openModal('<%= image %>')">
+        <% }) %>
+      </div>
+    </section>
+
+    <!-- Modal for Enlarged Image -->
+    <div id="imageModal" class="modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImage">
+      <div id="caption"></div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Vehicle Dealership</p>
+    </footer>
+  </div>
+
+  <script src="/js/vehicle-detail.js"></script>
 </body>
 </html>

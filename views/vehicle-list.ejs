@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle List</title>
-    <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle List</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <!-- ✅ Header Section -->
-    <header>
-        <div class="logo">
-            <h1>🚗 Vehicle Hub</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/vehicles">All Vehicles</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+  <!-- Header Section -->
+  <header>
+    <div class="logo">
+      <h1>🚗 Vehicle Hub</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/vehicles">All Vehicles</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- ✅ Main Content -->
-    <main>
-        <h2>Available Vehicles</h2>
-        <div class="vehicle-container">
-            <% vehicles.forEach(vehicle => { %>
-                <div class="vehicle-card">
-                    <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>">
-                    <h3><%= vehicle.name %></h3>
-                    <p>Price: $<%= vehicle.price.toLocaleString() %></p>
-                    <a class="details-btn" href="/vehicles/<%= vehicle.id %>">View Details</a>
-                </div>
-            <% }); %>
-        </div>
-    </main>
+  <!-- Main Content -->
+  <main>
+    <h2>Available Vehicles</h2>
+    <div class="vehicle-container">
+      <% if (vehicles && vehicles.length > 0) { %>
+        <% vehicles.forEach(vehicle => { %>
+          <div class="vehicle-card">
+            <!-- Build correct image path -->
+            <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>">
+            <h3><%= vehicle.name %></h3>
+            <p>Price: $<%= Number(vehicle.price).toLocaleString() %></p>
+            <a class="details-btn" href="/vehicles/<%= vehicle.id %>">View Details</a>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No vehicles available at the moment.</p>
+      <% } %>
+    </div>
+  </main>
 
-    <!-- ✅ Footer Section -->
-    <footer>
-        <p>&copy; <%= new Date().getFullYear() %> Vehicle Hub. All rights reserved OLUWANIYI AKIN  lAGOS NIGERA.</p>
-    </footer>
+  <!-- Footer Section -->
+  <footer>
+    <p>&copy; <%= new Date().getFullYear() %> Vehicle Hub. All rights reserved | Oluwaniyi Akin, Lagos, Nigeria.</p>
+  </footer>
 </body>
 </html>

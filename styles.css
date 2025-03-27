@@ -235,28 +235,30 @@ nav ul {
   }
 }
 
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
+.vehicle-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
 }
 
-.inventory-grid {
+.vehicle-content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  gap: 20px;
 }
 
-.inventory-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px;
-  width: 250px;
-  text-align: center;
+.vehicle-detail img {
+  width: 100%;
+  max-width: 400px;
   border-radius: 5px;
-  transition: transform 0.3s ease-in-out;
 }
 
-.inventory-item:hover {
-  transform: scale(1.05);
+.vehicle-info {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .vehicle-content {
+      flex-direction: column;
+  }
 }
