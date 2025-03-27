@@ -1,52 +1,71 @@
+// Load environment variables
+require("dotenv").config();
+
+// Import required modules
 const express = require("express");
 const path = require("path");
-const fs = require("fs");
-const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import vehicle routes
+const session = require("express-session");
+const morgan = require("morgan");
+const flash = require("connect-flash");
+const { engine } = require("express-handlebars");
+
+// Import routes and utilities
+const inventoryRoutes = require("./routes/inventory");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5500;
 
-// ✅ Middleware
-app.use(express.json()); // Parses JSON
-app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
-
-// ✅ Serve Static Files (CSS, Images, JS)
-app.use(express.static(path.join(__dirname, "public")));
-
-// ✅ Set View Engine to EJS
+// Set up view engine (EJS)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// ✅ Vehicle Routes
-app.use("/vehicles", vehicleRoutes);
+// Middleware
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(morgan("dev")); // Logger middleware
+app.use(flash());
 
+// Session configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret-key",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
-// ✅ Home Page Route (Displays Vehicle List)
+// Custom Middleware for Flash Messages
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
+  next();
+});
+
+// Home Route
 app.get("/", (req, res) => {
-    try {
-        const vehicles = require("./data/vehicles.json"); // ✅ Load vehicle data
-        res.render("vehicle-list", { vehicles }); // ✅ Render vehicle list view
-    } catch (error) {
-        console.error("Error loading vehicle data:", error);
-        res.status(500).send("Error loading vehicle data");
-    }
+  res.render("index", { title: "Home" });
 });
 
+// Inventory Routes
+app.use("/inventory", inventoryRoutes);
 
-// ✅ 404 Error Handling (Page Not Found)
-app.use((req, res) => {
-    res.status(404).render("404", { message: "Page Not Found" });
+// **Intentional Error Route for Task 3**
+app.get("/error", (req, res, next) => {
+  throw new Error("This is an intentional server error.");
 });
 
-// ✅ Global Error Handling Middleware
-app.use((err, req, res, next) => {
-    console.error("❌ Server Error:", err.stack);
-    res.status(500).render("500", { message: "Internal Server Error" });
+// 404 Error Handler (Page Not Found)
+app.use((req, res, next) => {
+  res.status(404).render("error", { title: "404 - Page Not Found", message: "The page you requested does not exist." });
 });
 
-// ✅ Start Server
+// Global Error Handling Middleware
+app.use(errorHandler);
+
+// Start the server
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-
