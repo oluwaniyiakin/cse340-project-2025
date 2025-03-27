@@ -7,6 +7,7 @@ const path = require('path');
 
 const app = express();
 
+console.log("Database URL:", process.env.DATABASE_URL);
 // Middleware
 app.use(morgan('dev')); // Logs HTTP requests
 app.use(express.json()); // Parses JSON bodies
