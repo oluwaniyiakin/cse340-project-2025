@@ -1,71 +1,38 @@
-// Load environment variables
-require("dotenv").config();
-
-// Import required modules
-const express = require("express");
-const path = require("path");
-const session = require("express-session");
-const morgan = require("morgan");
-const flash = require("connect-flash");
-const { engine } = require("express-handlebars");
-
-// Import routes and utilities
-const inventoryRoutes = require("./routes/inventory");
-const errorHandler = require("./middleware/errorHandler");
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const methodOverride = require('method-override');
+const routes = require('./routes/index'); // Main routes file
+const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 5500;
-
-// Set up view engine (EJS)
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
 // Middleware
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(morgan("dev")); // Logger middleware
-app.use(flash());
+app.use(morgan('dev')); // Logs HTTP requests
+app.use(express.json()); // Parses JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parses form data
+app.use(methodOverride('_method')); // Allows PUT/DELETE in forms
 
-// Session configuration
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "secret-key",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+// Static Files
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Custom Middleware for Flash Messages
+// View Engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Routes
+app.use('/', routes);
+
+// Error Handling Middleware
 app.use((req, res, next) => {
-  res.locals.success_msg = req.flash("success_msg");
-  res.locals.error_msg = req.flash("error_msg");
-  res.locals.error = req.flash("error");
-  next();
+  res.status(404).render('error/404', { title: 'Page Not Found' });
 });
 
-// Home Route
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('error/500', { title: 'Internal Server Error' });
 });
 
-// Inventory Routes
-app.use("/inventory", inventoryRoutes);
-
-// **Intentional Error Route for Task 3**
-app.get("/error", (req, res, next) => {
-  throw new Error("This is an intentional server error.");
-});
-
-// 404 Error Handler (Page Not Found)
-app.use((req, res, next) => {
-  res.status(404).render("error", { title: "404 - Page Not Found", message: "The page you requested does not exist." });
-});
-
-// Global Error Handling Middleware
-app.use(errorHandler);
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Start Server
+const PORT = process.env.PORT || 5500;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

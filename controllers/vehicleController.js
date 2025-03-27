@@ -1,30 +1,25 @@
-const path = require("path");
-const fs = require("fs");
+const vehicleModel = require('../models/vehicleModel');
+const utilities = require('../utilities/index');
 
-// Load vehicle data from JSON file
-const vehiclesPath = path.join(__dirname, "../data/vehicles.json");
-
-let vehicles = [];
-try {
-    const data = fs.readFileSync(vehiclesPath, "utf-8");
-    vehicles = JSON.parse(data);
-} catch (error) {
-    console.error("Error loading vehicle data:", error);
-}
-
-// Controller: Display all vehicles
-exports.getAllVehicles = (req, res) => {
-    res.render("vehicle-list", { vehicles });
-};
-
-// Controller: Display details of a specific vehicle
-exports.getVehicleById = (req, res) => {
-    const vehicleId = parseInt(req.params.id, 10);
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+const showVehicleDetail = async (req, res) => {
+  try {
+    const vehicleId = req.params.id;
+    const vehicle = await vehicleModel.getVehicleById(vehicleId);
 
     if (!vehicle) {
-        return res.status(404).render("404", { message: "Vehicle not found" });
+      return res.status(404).render('error/404', { title: 'Vehicle Not Found' });
     }
 
-    res.render("vehicle-detail", { vehicle });
+    res.render('vehicle-detail', {
+      title: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+      vehicle,
+      formattedPrice: utilities.formatPrice(vehicle.price),
+      formattedMileage: utilities.formatMileage(vehicle.mileage),
+    });
+  } catch (error) {
+    console.error('Error displaying vehicle:', error);
+    res.status(500).render('error/500', { title: 'Server Error' });
+  }
 };
+
+module.exports = { showVehicleDetail };
