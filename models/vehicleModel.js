@@ -5,7 +5,7 @@ const pool = require("../config/database"); // Ensure correct database connectio
  */
 async function getAllVehicles() {
     try {
-        const result = await pool.query("SELECT * FROM vehicles ORDER BY inv_year DESC LIMIT 10"); 
+        const result = await pool.query("SELECT id, make, model, year FROM vehicles ORDER BY year DESC LIMIT 10");
         return result.rows;
     } catch (err) {
         console.error("❌ Error fetching vehicles:", err);
