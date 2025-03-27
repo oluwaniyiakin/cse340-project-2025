@@ -5,6 +5,9 @@ const methodOverride = require('method-override');
 const routes = require('./routes/index'); // Main routes file
 const path = require('path');
 
+const vehicleRoutes = require("./routes/vehicle");
+
+
 const app = express();
 
 console.log("Database URL:", process.env.DATABASE_URL);
@@ -13,7 +16,7 @@ app.use(morgan('dev')); // Logs HTTP requests
 app.use(express.json()); // Parses JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parses form data
 app.use(methodOverride('_method')); // Allows PUT/DELETE in forms
-
+app.use("/vehicles", vehicleRoutes);
 // Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
