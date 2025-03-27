@@ -1,15 +1,15 @@
-const db = require("../config/database"); // Ensure this is the correct path to your DB config
+const db = require("../config/database"); // Ensure this correctly imports your database connection
 
 /**
  * Get all vehicles from the database
  */
 async function getAllVehicles() {
     try {
-        const result = await db.query("SELECT * FROM vehicles");
+        const result = await db.query("SELECT * FROM vehicles LIMIT 10"); // Use db.query consistently
         return result.rows;
-    } catch (error) {
-        console.error("Error fetching vehicles:", error);
-        throw error;
+    } catch (err) {
+        console.error("Error fetching vehicles:", err);
+        throw err;
     }
 }
 
