@@ -1,8 +1,57 @@
-<%- include('../partials/header.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= vehicle.inv_make %> <%= vehicle.inv_model %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
 
-<h1><%= title %></h1>
-<div class="vehicle-container">
-    <%- vehicleHTML %>
-</div>
+    <div class="container">
+        <div class="vehicle-header">
+            <h1><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+            <p class="price">No-Haggle Price: <strong>$<%= vehicle.inv_price %></strong></p>
+        </div>
 
-<%- include('../partials/footer.ejs') %>
+        <div class="vehicle-content">
+            <div class="vehicle-image">
+                <img id="mainImage" src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+            </div>
+
+            <div class="vehicle-info">
+                <p><strong>Mileage:</strong> <%= vehicle.inv_miles %> miles</p>
+                <p><strong>MPG:</strong> 29/37 (City/Highway)</p>
+                <p><strong>Exterior Color:</strong> <%= vehicle.inv_color %></p>
+                <p><strong>Fuel Type:</strong> Gasoline</p>
+                <p><strong>Drivetrain:</strong> Front Wheel Drive</p>
+                <p><strong>Transmission:</strong> Xtronic CVT</p>
+                <p><strong>Stock #:</strong> 801C80</p>
+                <p><strong>VIN:</strong> 311A87AP3KY3A2622</p>
+            </div>
+        </div>
+
+        <div class="vehicle-thumbnails">
+            <img class="thumbnail" src="<%= vehicle.inv_thumbnail %>" alt="Thumbnail">
+            <img class="thumbnail" src="/images/car2.jpg" alt="Thumbnail">
+            <img class="thumbnail" src="/images/car3.jpg" alt="Thumbnail">
+        </div>
+
+        <div class="buttons">
+            <button>Start My Purchase</button>
+            <button>Contact Us</button>
+            <button>Schedule Test Drive</button>
+            <button>Apply for Financing</button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll(".thumbnail").forEach(img => {
+            img.addEventListener("click", function() {
+                document.getElementById("mainImage").src = this.src;
+            });
+        });
+    </script>
+
+</body>
+</html>

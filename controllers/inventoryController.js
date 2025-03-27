@@ -1,35 +1,17 @@
-const inventoryModel = require("../models/inventoryModel");
+const Inventory = require('../models/inventory');
 
-// Controller to get vehicle details
-exports.getVehicleDetail = async (req, res, next) => {
-  try {
-    const vehicleId = req.params.id;
-    const vehicle = await inventoryModel.getVehicleById(vehicleId);
-    
-    if (!vehicle) {
-      return res.status(404).render("error", { message: "Vehicle not found" });
+exports.getVehicleDetails = async (req, res) => {
+    try {
+        const { inv_id } = req.params;
+        const vehicle = await Inventory.getById(inv_id);
+
+        if (!vehicle) {
+            return res.status(404).render('error', { message: 'Vehicle not found' });
+        }
+
+        res.render('inventory/detail', { vehicle });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
     }
-
-    // Format price and mileage
-    vehicle.price = formatPrice(vehicle.price);
-    vehicle.mileage = formatMileage(vehicle.mileage);
-
-    res.render("vehicle-detail", {
-      vehicle: vehicle,
-      formatPrice: formatPrice,
-      formatMileage: formatMileage
-    });
-  } catch (err) {
-    next(err);
-  }
 };
-
-// Utility function to format price
-function formatPrice(price) {
-  return `$${price.toLocaleString()}`;
-}
-
-// Utility function to format mileage
-function formatMileage(mileage) {
-  return mileage.toLocaleString();
-}

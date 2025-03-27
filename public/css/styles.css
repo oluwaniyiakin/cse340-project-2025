@@ -188,3 +188,58 @@ footer {
   padding: 15px;
   margin-top: 20px;
 }
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.vehicle-header {
+  text-align: center;
+}
+
+.vehicle-content {
+  display: flex;
+  gap: 20px;
+}
+
+.vehicle-image img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+}
+
+.vehicle-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.vehicle-thumbnails img {
+  width: 100px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.vehicle-thumbnails img:hover {
+  border-color: #007bff;
+}
+
+.vehicle-info {
+  flex: 1;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.buttons button {
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
