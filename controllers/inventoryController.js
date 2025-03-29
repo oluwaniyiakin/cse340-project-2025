@@ -2,8 +2,8 @@ const Inventory = require('../models/inventory');
 
 exports.getVehicleDetails = async (req, res) => {
     try {
-        const { inv_id } = req.params;
-        const vehicle = await Inventory.getById(inv_id);
+        const { inventory_id } = req.params;
+        const vehicle = await Inventory.getById(inventory_id);
 
         if (!vehicle) {
             return res.status(404).render('error', { message: 'Vehicle not found' });

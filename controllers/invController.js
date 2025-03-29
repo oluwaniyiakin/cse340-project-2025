@@ -2,48 +2,46 @@ const inventoryModel = require("../models/inventoryModel");
 const utilities = require("../utilities");
 const fs = require("fs"); // For checking existing images
 
-// Get all vehicles and set the first one as default
+// Get vehicle details by inventory_id
 async function getVehicleDetails(req, res) {
     try {
-        console.log("🔍 Fetching all vehicles...");
+        console.log("🔍 Fetching vehicle details...");
 
-        // Fetch all vehicles from the database
-        const vehicles = await inventoryModel.getAllVehicles();
-
-        if (!vehicles || vehicles.length === 0) {
-            console.error("❌ No vehicles found!");
-            return res.status(404).render("error", { 
-                title: "No Vehicles Available", 
-                message: "Currently, there are no vehicles available in our inventory." 
+        const inventoryId = req.params.inventory_id;
+        if (!inventoryId) {
+            console.error("❌ No inventory ID provided!");
+            return res.status(400).render("error", { 
+                title: "Invalid Request", 
+                message: "No vehicle ID was provided. Please select a vehicle." 
             });
         }
 
-        // ✅ Select the first vehicle as default
-        let selectedVehicle = vehicles[0];
-
-        // If a specific vehicle ID is provided, fetch that one
-        if (req.params.inventory_id) {
-            const vehicle = vehicles.find(v => v.inv_id === parseInt(req.params.inventory_id));
-            if (vehicle) selectedVehicle = vehicle;
+        // Fetch vehicle details from the database
+        const vehicle = await inventoryModel.getVehicleById(inventoryId);
+        if (!vehicle) {
+            console.error(`❌ Vehicle with ID ${inventoryId} not found!`);
+            return res.status(404).render("error", { 
+                title: "Vehicle Not Found", 
+                message: "The requested vehicle does not exist in our inventory." 
+            });
         }
 
         // ✅ Ensure images exist, fallback to "no-image.png" if missing
-        selectedVehicle.inv_image = getVehicleImage(selectedVehicle.inv_model);
-        selectedVehicle.inv_thumbnail = getVehicleThumbnail(selectedVehicle.inv_model);
+        vehicle.inv_image = getVehicleImage(vehicle.inv_model);
+        vehicle.inv_thumbnail = getVehicleThumbnail(vehicle.inv_model);
 
         // ✅ Format price and mileage correctly
-        selectedVehicle.inv_price = utilities.formatCurrency(selectedVehicle.inv_price);
-        selectedVehicle.inv_miles = utilities.formatNumber(selectedVehicle.inv_miles);
+        vehicle.inv_price = utilities.formatCurrency(vehicle.inv_price);
+        vehicle.inv_miles = utilities.formatNumber(vehicle.inv_miles);
 
-        // ✅ Render the view with all vehicles (for thumbnails) and the selected vehicle
-        res.render("inventory/vehicle-detail", {
-            title: `${selectedVehicle.inv_year} ${selectedVehicle.inv_make} ${selectedVehicle.inv_model}`,
-            vehicles, // All vehicles for thumbnails
-            vehicle: selectedVehicle, // Vehicle to display
+        // ✅ Render the vehicle details view
+        res.render("inventory/vehicledetail", {
+            title: `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`,
+            vehicle, // Vehicle to display
         });
 
     } catch (error) {
-        console.error("❌ ErM ror in getVehicleDetails:", error);
+        console.error("❌ Error in getVehicleDetails:", error);
         res.status(500).render("error", { 
             title: "Server Error", 
             message: "An unexpected error occurred. Please try again later.", 

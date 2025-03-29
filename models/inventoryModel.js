@@ -1,7 +1,13 @@
 const pool = require("../db");
 
-exports.getVehicleById = async (vehicleId) => {
-  const query = "SELECT * FROM vehicles WHERE id = $1";
-  const { rows } = await pool.query(query, [vehicleId]);
-  return rows[0];
-};
+async function getVehicleById(inventoryId) {
+    try {
+        const result = await pool.query("SELECT * FROM inventory WHERE inventory_id = $1", [inventoryId]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error("❌ Database query error:", error);
+        return null;
+    }
+}
+
+module.exports = { getVehicleById };

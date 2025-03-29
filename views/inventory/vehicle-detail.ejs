@@ -119,12 +119,15 @@
     <main class="vehicle-container">
         <!-- Vehicle Image Display -->
         <div class="vehicle-image">
-            <img id="main-image" src="<%= vehicle.fullsize_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+            <img id="main-image" src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
             
             <!-- Thumbnail Slider -->
             <div class="thumbnail-slider">
                 <% vehicles.forEach(v => { %>
-                    <img class="thumbnail" src="<%= v.fullsize_image %>" alt="Thumbnail" onclick="updateMainImage('<%= v.fullsize_image %>', '<%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %>')">
+                    <img class="thumbnail" 
+                         src="<%= v.inv_thumbnail %>" 
+                         alt="Thumbnail of <%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %>" 
+                         onclick="updateMainImage('<%= v.inv_image %>', '<%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %>')">
                 <% }); %>
             </div>
         </div>
