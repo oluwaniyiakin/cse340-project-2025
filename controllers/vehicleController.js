@@ -1,45 +1,16 @@
-const vehicleModel = require('../models/vehicleModel');
-const utilities = require('../utilities/index');
+const fs = require('fs');
+const path = require('path');
 
-const showAllVehicles = async (req, res) => {
-  try {
-    const vehicles = await vehicleModel.getAllVehicles();
+const vehiclesFilePath = path.join(__dirname, '../data/vehicles.json');
 
-    if (!vehicles || vehicles.length === 0) {
-      console.warn('No vehicles found in the database.');
-      return res.status(404).render('error/404', { title: 'No Vehicles Found' });
-    }
-
-    res.render('vehicle-list', {
-      title: 'All Vehicles',
-      vehicles
-    });
-  } catch (error) {
-    console.error('Error fetching all vehicles:', error);
-    res.status(500).render('error/500', { title: 'Server Error' });
-  }
+const getAllVehicles = () => {
+    const data = fs.readFileSync(vehiclesFilePath, 'utf-8');
+    return JSON.parse(data);
 };
 
-const showVehicleDetail = async (req, res) => {
-  try {
-    const vehicleId = req.params.id;
-    const vehicle = await vehicleModel.getVehicleById(vehicleId);
-
-    if (!vehicle) {
-      console.warn(`Vehicle with ID ${vehicleId} not found.`);
-      return res.status(404).render('error/404', { title: 'Vehicle Not Found' });
-    }
-
-    res.render('vehicle-detail', {
-      title: `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`,
-      vehicle,
-      formattedPrice: utilities.formatPrice(vehicle.inv_price),
-      formattedMileage: utilities.formatMileage(vehicle.inv_miles),
-    });
-  } catch (error) {
-    console.error(`Error fetching vehicle details for ID ${req.params.id}:`, error);
-    res.status(500).render('error/500', { title: 'Server Error' });
-  }
+const getVehicleById = (id) => {
+    const vehicles = getAllVehicles();
+    return vehicles.find(vehicle => vehicle.id === parseInt(id));
 };
 
-module.exports = { showAllVehicles, showVehicleDetail };
+module.exports = { getAllVehicles, getVehicleById };

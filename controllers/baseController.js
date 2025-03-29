@@ -1,16 +1,12 @@
-const vehicleModel = require("../models/vehicleModel"); // Import vehicle model
+const fs = require('fs');
+const path = require('path');
 
-/**
- * Render the home page with a list of vehicles
- */
-async function buildHome(req, res) {
-    try {
-        const vehicles = await vehicleModel.getAllVehicles(); // Fetch vehicles from DB
-        res.render("index", { vehicles }); // Pass data to EJS template
-    } catch (error) {
-        console.error("❌ Error loading vehicles:", error);
-        res.status(500).send("Internal Server Error");
-    }
-}
+const vehiclesFilePath = path.join(__dirname, '../data/vehicles.json');
 
-module.exports = { buildHome };
+const getHomePage = (req, res) => {
+    const vehicles = JSON.parse(fs.readFileSync(vehiclesFilePath, 'utf-8'));
+    
+    res.render('home', { vehicles });
+};
+
+module.exports = { getHomePage };

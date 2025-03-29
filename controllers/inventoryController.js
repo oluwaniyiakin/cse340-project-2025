@@ -1,17 +1,26 @@
-const Inventory = require('../models/inventory');
+const fs = require('fs');
+const path = require('path');
 
-exports.getVehicleDetails = async (req, res) => {
-    try {
-        const { inventory_id } = req.params;
-        const vehicle = await Inventory.getById(inventory_id);
+const getVehicles = () => {
+    const filePath = path.join(__dirname, '../data/vehicles.json');
+    const jsonData = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(jsonData);
+};
 
-        if (!vehicle) {
-            return res.status(404).render('error', { message: 'Vehicle not found' });
-        }
+// Fetch a specific vehicle by ID
+const getVehicleById = (id) => {
+    const vehicles = getVehicles();
+    return vehicles.find(vehicle => vehicle.inv_id == id);
+};
 
-        res.render('inventory/detail', { vehicle });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Server Error');
+// Controller to serve vehicle details
+exports.vehicleDetail = (req, res) => {
+    const vehicleId = req.params.id;
+    const vehicle = getVehicleById(vehicleId);
+
+    if (!vehicle) {
+        return res.status(404).send('Vehicle not found');
     }
+
+    res.render('inventory/vehicledetail', { vehicle, vehicles: getVehicles() });
 };

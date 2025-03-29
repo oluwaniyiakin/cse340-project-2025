@@ -1,11 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const vehicleController = require('../controllers/vehicleController');
+const vehicleController = require('../controllers/vehicleController'); // Make sure this path is correct
 
-// Route to get all vehicles
-router.get('/', vehicleController.showAllVehicles);
-
-// Route to get a single vehicle by ID
-router.get('/:id', vehicleController.showVehicleDetail);
+router.get('/:id', vehicleController.getVehicleById); // Ensure this function is properly exported
 
 module.exports = router;

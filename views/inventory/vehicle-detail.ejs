@@ -3,166 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %> | CSE Motors</title>
+    <title><%= vehicle.inv_make %> <%= vehicle.inv_model %> - Details</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <script defer src="/js/vehicleDetail.js"></script>
-    <style>
-        /* General Styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
-        /* Container */
-        .vehicle-container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            align-items: flex-start;
-        }
-        
-        /* Vehicle Image Section */
-        .vehicle-image {
-            max-width: 50%;
-            text-align: center;
-        }
-        .vehicle-image img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-        
-        /* Thumbnail Slider */
-        .thumbnail-slider {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .thumbnail {
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.3s;
-            border: 2px solid transparent;
-        }
-        .thumbnail:hover {
-            transform: scale(1.1);
-            border-color: #007bff;
-        }
-        
-        /* Vehicle Details */
-        .vehicle-info {
-            max-width: 45%;
-        }
-        .vehicle-info h2 {
-            font-size: 28px;
-            color: #333;
-        }
-        .price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .details p {
-            font-size: 16px;
-            line-height: 1.5;
-            margin: 5px 0;
-        }
-
-        /* Action Buttons */
-        .vehicle-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .vehicle-actions button {
-            padding: 10px 15px;
-            font-size: 16px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .vehicle-actions button:hover {
-            background: #0056b3;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .vehicle-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .vehicle-image, .vehicle-info {
-                max-width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
-
     <header>
-        <h1><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+        <h1>Vehicle Details</h1>
+        <a href="/inventory">Back to Inventory</a>
     </header>
 
-    <main class="vehicle-container">
-        <!-- Vehicle Image Display -->
-        <div class="vehicle-image">
-            <img id="main-image" src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
-            
-            <!-- Thumbnail Slider -->
-            <div class="thumbnail-slider">
-                <% vehicles.forEach(v => { %>
-                    <img class="thumbnail" 
-                         src="<%= v.inv_thumbnail %>" 
-                         alt="Thumbnail of <%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %>" 
-                         onclick="updateMainImage('<%= v.inv_image %>', '<%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %>')">
-                <% }); %>
-            </div>
-        </div>
+    <main class="vehicle-detail">
+        <section class="vehicle-image">
+            <img src="/images/vehicles/<%= vehicle.inv_image ? vehicle.inv_image : 'no-image.jpg' %>" 
+                 alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+        </section>
 
-        <!-- Vehicle Details -->
-        <div class="vehicle-info">
-            <h2><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h2>
-            <p class="price">Price: <%= vehicle.inv_price %></p>
-            <div class="details">
-                <p><strong>Mileage:</strong> <%= vehicle.inv_miles %> miles</p>
-                <p><strong>Fuel Type:</strong> <%= vehicle.fuel_type %></p>
-                <p><strong>Transmission:</strong> <%= vehicle.transmission %></p>
-                <p><strong>Drivetrain:</strong> <%= vehicle.drivetrain %></p>
-                <p><strong>Exterior Color:</strong> <%= vehicle.ext_color %></p>
-                <p><strong>Interior Color:</strong> <%= vehicle.int_color %></p>
-                <p><strong>Stock Number:</strong> <%= vehicle.stock_number %></p>
-                <p><strong>VIN:</strong> <%= vehicle.vin %></p>
-            </div>
+        <section class="vehicle-info">
+            <h2><%= vehicle.inv_make %> <%= vehicle.inv_model %> (<%= vehicle.inv_year %>)</h2>
+            <p><strong>Price:</strong> $<%= vehicle.inv_price.toLocaleString() %></p>
 
-            <!-- Action Buttons -->
-            <div class="vehicle-actions">
-                <button>Start My Purchase</button>
-                <button>Contact Us</button>
-                <button>Schedule Test Drive</button>
-                <button>Apply for Financing</button>
-            </div>
-        </div>
+            <h3>Vehicle Features</h3>
+            <ul>
+                <li><strong>Make:</strong> <%= vehicle.inv_make %></li>
+                <li><strong>Model:</strong> <%= vehicle.inv_model %></li>
+                <li><strong>Year:</strong> <%= vehicle.inv_year %></li>
+                <li><strong>Price:</strong> $<%= vehicle.inv_price.toLocaleString() %></li>
+            </ul>
+        </section>
     </main>
 
-    <script>
-        function updateMainImage(imageSrc, title) {
-            document.getElementById("main-image").src = imageSrc;
-            document.querySelector("header h1").textContent = title;
-        }
-    </script>
-
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Vehicle Inventory</p>
+    </footer>
 </body>
 </html>
