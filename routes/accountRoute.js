@@ -1,31 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const accountController = require("../controllers/accountController");
-const utilities = require("../utilities/"); // ✅ Import utilities
+const utilities = require("../utilities/"); 
+const regValidate = require("../utilities/account-validation");
 
 // ✅ Login Route
 router.get("/login", accountController.buildLogin);
-router.post('/register', utilities.handleErrors(accountController.registerAccount));
 
 // ✅ Show Registration Page
 router.get("/register", (req, res) => {
     res.render("account/register", { messages: {} });
 });
 
-// ✅ Handle Registration Form Submission
-router.post("/register", async (req, res) => {
-    const { account_firstname, account_lastname, account_email, account_password } = req.body;
-
-    // 🚨 Validate Fields
-    if (!account_firstname || !account_lastname || !account_email || !account_password) {
-        return res.render("account/register", { messages: { error: "All fields are required!" } });
-    }
-
-    // 🚀 Simulate Saving to Database (Replace with DB Logic)
-    console.log("✅ New User Registered:", { account_firstname, account_lastname, account_email });
-
-    res.render("account/register", { messages: { success: "Registration successful! You can now log in." } });
-});
+// ✅ Handle Registration Form Submission with Validation
+router.post(
+    "/register",
+    regValidate.registrationRules(),
+    regValidate.checkRegData,
+    utilities.handleErrors(accountController.registerAccount)
+);
 
 // ✅ Error Handling Middleware
 router.use((err, req, res, next) => {
