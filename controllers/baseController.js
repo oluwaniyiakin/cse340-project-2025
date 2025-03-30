@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const vehicleModel = require("../models/vehicleModel"); // Import the model
 const utilities = require("../utilities");
 
@@ -27,5 +28,17 @@ async function buildHome(req, res, next) {
         next(error); // Pass the error to the middleware
     }
 }
+=======
+const fs = require('fs');
+const path = require('path');
 
-module.exports = { buildHome };
+const vehiclesFilePath = path.join(__dirname, '../data/vehicles.json');
+>>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
+
+const getHomePage = (req, res) => {
+    const vehicles = JSON.parse(fs.readFileSync(vehiclesFilePath, 'utf-8'));
+    
+    res.render('home', { vehicles });
+};
+
+module.exports = { getHomePage };

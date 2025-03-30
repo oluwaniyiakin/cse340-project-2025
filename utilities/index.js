@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const Util = {};
 
 /**
@@ -67,3 +68,15 @@ Util.handleErrors = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
 module.exports = Util;
+=======
+const formatPrice = (price) => {
+    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+  };
+  
+  const formatMileage = (mileage) => {
+    return mileage.toLocaleString('en-US');
+  };
+  
+  module.exports = { formatPrice, formatMileage };
+  
+>>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2

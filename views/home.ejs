@@ -1,4 +1,77 @@
+<<<<<<< HEAD
 <a href="/inventory/detail/<%= vehicle.inv_id %>">
     <img src="<%= vehicle.inv_thumbnail %>" alt="<%= vehicle.inv_make %>">
     <p><%= vehicle.inv_make %> <%= vehicle.inv_model %></p>
 </a>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Inventory</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- ✅ HEADER -->
+    <header>
+        <h1>Welcome to Our Vehicle Inventory</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/inventory?type=truck">Trucks</a></li>
+                <li><a href="/inventory?type=suv">SUVs</a></li>
+                <li><a href="/inventory?type=sedan">Sedans</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- ✅ SIDEBAR -->
+            <aside class="sidebar">
+                <h2>Filter by Type</h2>
+                <ul>
+                    <li><a href="/inventory?type=truck">Trucks</a></li>
+                    <li><a href="/inventory?type=suv">SUVs</a></li>
+                    <li><a href="/inventory?type=sedan">Sedans</a></li>
+                </ul>
+            </aside>
+
+            <!-- ✅ VEHICLE LISTING -->
+            <section class="vehicle-list">
+                <h2>Available Vehicles</h2>
+                <div class="vehicle-grid">
+                    <% vehicles.forEach(vehicle => { %>
+                        <div class="vehicle-card">
+                            <img src="/images/vehicles/<%= vehicle.image %>" 
+                                 alt="<%= vehicle.name %>" 
+                                 onerror="this.onerror=null; this.src='/images/vehicles/no-image.JPG';">
+                            
+                            <div class="vehicle-details">
+                                <h3><%= vehicle.name %></h3>
+                                <p><strong>Price:</strong> $<%= vehicle.price.toLocaleString() %></p>
+                                <p><strong>Type:</strong> <%= vehicle.type %></p>
+                                <p><strong>Year:</strong> <%= vehicle.year %></p>
+                                <p><strong>Mileage:</strong> <%= vehicle.mileage %> miles</p>
+                                <p><strong>Description:</strong> <%= vehicle.description %></p>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ✅ FOOTER -->
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> Vehicle Inventory. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
+>>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
