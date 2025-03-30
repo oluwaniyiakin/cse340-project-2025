@@ -5,20 +5,22 @@ const pool = require("../database"); // PostgreSQL database connection
  * **************************************** */
 async function getNav() {
     try {
-        const result = await pool.query("SELECT classification_id, classification_name FROM classification ORDER BY classification_name");
+        const result = await pool.query(
+            "SELECT classification_id, classification_name FROM classification ORDER BY classification_name"
+        );
         const classifications = result.rows;
 
         let nav = `<ul>`;
         nav += `<li><a href="/" title="Home">Home</a></li>`;
 
-        classifications.forEach(classification => {
+        classifications.forEach((classification) => {
             nav += `<li><a href="/inventory/${classification.classification_id}" title="${classification.classification_name}">${classification.classification_name}</a></li>`;
         });
 
         nav += `</ul>`;
         return nav;
     } catch (error) {
-        console.error("Error generating navigation:", error);
+        console.error("❌ Error generating navigation:", error);
         throw error;
     }
 }
@@ -38,8 +40,11 @@ function flashMessages(req, res, next) {
  *  Middleware to handle errors gracefully
  * **************************************** */
 function errorHandler(err, req, res, next) {
-    console.error("Server Error:", err);
-    res.status(500).render("errors/500", { title: "Server Error", message: "Something went wrong. Please try again later." });
+    console.error("❌ Server Error:", err);
+    res.status(500).render("errors/500", {
+        title: "Server Error",
+        message: "Something went wrong. Please try again later.",
+    });
 }
 
 /* ****************************************
@@ -53,10 +58,22 @@ function checkAuth(req, res, next) {
     next();
 }
 
+/* ****************************************
+ *  Function to handle async errors
+ * **************************************** */
+function handleErrors(fn) {
+    return function (req, res, next) {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    };
+}
+
+/* ****************************************
+ *  Export all utilities correctly
+ * **************************************** */
 module.exports = {
     getNav,
     flashMessages,
     errorHandler,
-    checkAuth
+    checkAuth,
+    handleErrors, // ✅ Now properly included
 };
-

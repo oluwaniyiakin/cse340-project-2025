@@ -1,35 +1,44 @@
-<%- include("../partials/header") %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Updated CSS -->
+</head>
+<body>
 
-<main>
-  <h1>Create an Account</h1>
+    <header>
+        <div class="logo"><h1>My Website</h1></div>
+    </header>
 
-  <!-- Flash Messages -->
-  <% if (messages && messages.error) { %>
-    <p class="error"><%= messages.error %></p>
-  <% } %>
-  <% if (messages && messages.success) { %>
-    <p class="success"><%= messages.success %></p>
-  <% } %>
-  <link rel="stylesheet" href="/css/styles.css">
+    <div class="auth-container">
+        <h2>Register</h2>
+        
+        <form action="/account/register" method="POST">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="account_firstname" required>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="account_lastname" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="account_email" required placeholder="Enter a valid email">
+            
+            <label for="password">Password:</label>
+            <span class="password-requirements">Must be at least 12 characters, contain 1 number, 1 capital letter, and 1 special character.</span>
+            <input type="password" id="password" name="account_password" required 
+                   pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+            
+            <button type="submit">Register</button>
+        </form>
 
-  <!-- Registration Form -->
-  <form action="/account/register" method="POST">
-    <label for="account_firstname">First Name:</label>
-    <input type="text" id="account_firstname" name="account_firstname" required>
+        <p>Already have an account? <a href="/account/login">Login here</a></p>
+    </div>
 
-    <label for="account_lastname">Last Name:</label>
-    <input type="text" id="account_lastname" name="account_lastname" required>
+    <footer>
+        <p>&copy; 2025 My Website</p>
+    </footer>
 
-    <label for="account_email">Email:</label>
-    <input type="email" id="account_email" name="account_email" required>
-
-    <label for="account_password">Password:</label>
-    <input type="password" id="account_password" name="account_password" required>
-
-    <button type="submit">Register</button>
-  </form>
-
-  <p>Already have an account? <a href="/account/login">Login here</a></p>
-</main>
-
-<%- include("../partials/footer") %>
+</body>
+</html>

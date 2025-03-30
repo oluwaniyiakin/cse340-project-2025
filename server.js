@@ -1,9 +1,14 @@
-require("dotenv").config(); 
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const { Pool } = require("pg"); // ✅ Import PostgreSQL client
-const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import vehicle routes
-const accountRoutes = require("./routes/accountRoutes"); // ✅ Import account routes
+const session = require("express-session");
+const flash = require("express-flash");
+const bodyParser = require("body-parser");
+
+// ✅ Import Routes
+const vehicleRoutes = require("./routes/vehicleRoutes");
+const accountRoutes = require("./routes/accountRoute"); // ✅ Ensure the correct filename!
 
 const app = express();
 
@@ -12,17 +17,35 @@ const PORT = process.env.PORT || 5500;
 
 // ✅ PostgreSQL Database Connection
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, // Use DATABASE_URL from .env
-    ssl: { rejectUnauthorized: false } // For Render/Heroku deployments
+    connectionString: process.env.DATABASE_URL, // ✅ Use DATABASE_URL from .env
+    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false, // ✅ Only enable SSL in production
 });
 
 // ✅ Middleware
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json()); // ✅ Parses JSON requests
+app.use(express.urlencoded({ extended: true })); // ✅ Parses URL-encoded data
+app.use(express.static(path.join(__dirname, "public"))); // ✅ Serve static files
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // ✅ Parse form data
 
-app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
+// ✅ Configure session middleware
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || "mySecret123", // 🔥 Use a secure key from .env
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: process.env.NODE_ENV === "production" }, // ✅ Secure cookies in production
+    })
+);
 
-// ✅ Serve Static Files (CSS, Images, JS)
-app.use(express.static(path.join(__dirname, "public")));
+// ✅ Initialize express-flash
+app.use(flash());
+
+// ✅ Make flash messages available in all views
+app.use((req, res, next) => {
+    res.locals.messages = req.flash();
+    next();
+});
 
 // ✅ Set View Engine to EJS
 app.set("view engine", "ejs");
@@ -36,12 +59,12 @@ app.use("/account", accountRoutes); // 🔥 Handles /account/login & /account/re
 app.get("/", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM vehicles"); // ✅ Fetch data from `vehicles` table
-        const vehicles = result.rows; // ✅ Get rows from query result
-        res.render("vehicle-list", { vehicles, notice: "" }); // Ensures `notice` exists
-
+        const vehicles = result.rows;
+        res.render("vehicle-list", { vehicles, notice: "" });
     } catch (error) {
         console.error("❌ Error loading vehicle data:", error);
-        res.status(500).send("Error loading vehicle data");
+        req.flash("error", "Error loading vehicle data");
+        res.status(500).render("500", { message: "Error loading vehicle data" });
     }
 });
 
@@ -53,6 +76,7 @@ app.use((req, res) => {
 // ✅ Global Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error("❌ Server Error:", err.stack);
+    req.flash("error", "Internal Server Error");
     res.status(500).render("500", { message: "Internal Server Error" });
 });
 
