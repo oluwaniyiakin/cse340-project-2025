@@ -1,80 +1,68 @@
-const invModel = require("../models/inventoryModel");
-
 const Util = {};
 
-/* ************************
- * Constructs the nav HTML unordered list
- ************************** */
+/**
+ * Format a number as U.S. dollars.
+ * @param {number} price - The price to format.
+ * @returns {string} Formatted price, e.g., "$16,999.00"
+ */
+Util.formatPrice = function (price) {
+  return `$${Number(price).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+};
+
+/**
+ * Format mileage with commas.
+ * @param {number} mileage - The mileage to format.
+ * @returns {string} Formatted mileage, e.g., "74,750"
+ */
+Util.formatMileage = function (mileage) {
+  return Number(mileage).toLocaleString('en-US');
+};
+
+/**
+ * Build dynamic HTML for the vehicle detail view.
+ * @param {Object} vehicle - Vehicle data from the database.
+ * @returns {string} HTML string containing vehicle detail.
+ */
+Util.buildVehicleDetailHTML = function (vehicle) {
+  return `
+    <div class="vehicle-detail">
+      <div class="vehicle-main-image">
+        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
+      </div>
+      <div class="vehicle-info">
+        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p class="price">Price: ${Util.formatPrice(vehicle.inv_price)}</p>
+        <p class="mileage">Mileage: ${Util.formatMileage(vehicle.inv_miles)} miles</p>
+        <p class="description">${vehicle.inv_description}</p>
+        <p class="certification">Certification and Inspection: The vehicle has been inspected by an ASE-certified technician, indicating it meets quality standards.</p>
+      </div>
+    </div>
+  `;
+};
+
+/**
+ * getNav - Returns dynamic navigation bar HTML.
+ * For now, returns a static navigation bar.
+ * @returns {Promise<string>} A promise that resolves to a navigation bar HTML string.
+ */
 Util.getNav = async function () {
-  try {
-    console.log("🔍 Fetching classifications...");
-    let data = await invModel.getClassifications();
-
-    if (!data || !data.rows || data.rows.length === 0) {
-      console.error("❌ No classifications found.");
-      return "<ul><li><a href='/' title='Home page'>Home</a></li></ul>";
-    }
-
-    console.log("✅ Classifications:", data.rows);
-
-    let list = "<ul>";
-    list += '<li><a href="/" title="Home page">Home</a></li>';
-    data.rows.forEach((row) => {
-      list += `<li>
-        <a href="/inv/type/${row.classification_id}" title="See our inventory of ${row.classification_name} vehicles">
-          ${row.classification_name}
-        </a>
-      </li>`;
-    });
-    list += "</ul>";
-
-    return list;
-  } catch (error) {
-    console.error("❌ Database error in getNav:", error);
-    return "<ul><li><a href='/' title='Home page'>Home</a></li></ul>"; // Return a fallback nav in case of error
-  }
+  // In a production app, you might dynamically build the nav from the database.
+  return `
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inventory">Inventory</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+  `;
 };
 
-/* **************************************
- * Build the classification view HTML
- * ************************************ */
-Util.buildClassificationGrid = function (data) {
-  try {
-    if (!data || data.length === 0) {
-      return '<p class="notice">Sorry, no matching vehicles could be found.</p>';
-    }
-
-    let grid = '<ul id="inv-display">';
-    data.forEach((vehicle) => {
-      grid += `<li>
-        <a href="../../inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">
-          <img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model} on CSE Motors" />
-        </a>
-        <div class="namePrice">
-          <hr />
-          <h2>
-            <a href="../../inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">
-              ${vehicle.inv_make} ${vehicle.inv_model}
-            </a>
-          </h2>
-          <span>$${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</span>
-        </div>
-      </li>`;
-    });
-    grid += "</ul>";
-
-    return grid;
-  } catch (error) {
-    console.error("❌ Error in buildClassificationGrid:", error);
-    return '<p class="notice">Error loading vehicles.</p>';
-  }
-};
-
-/* ****************************************
- * Middleware For Handling Errors
- * Wrap other functions in this for 
- * General Error Handling
- **************************************** */
+/**
+ * handleErrors - Higher-Order Function for handling errors in asynchronous route handlers.
+ * @param {Function} fn - An asynchronous function (route handler).
+ * @returns {Function} A new function that wraps the async function with error handling.
+ */
 Util.handleErrors = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 

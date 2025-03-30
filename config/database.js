@@ -1,27 +1,20 @@
-const fs = require("fs");
-const path = require("path");
+const { Pool } = require("pg");
+require("dotenv").config();
 
-// Path to vehicles.json file
-const filePath = path.join(__dirname, "../data/vehicles.json");
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
 
-// Function to read and parse JSON data
-function readData() {
-    try {
-        const data = fs.readFileSync(filePath, "utf8");
-        return JSON.parse(data);
-    } catch (error) {
-        console.error("Error reading vehicles.json:", error);
-        return [];
-    }
-}
+pool.on("connect", () => {
+  console.log("✅ Connected to PostgreSQL Database!");
+});
 
-// Function to save data back to the JSON file (for future updates)
-function saveData(data) {
-    try {
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
-    } catch (error) {
-        console.error("Error writing to vehicles.json:", error);
-    }
-}
+pool.on("error", (err) => {
+  console.error("❌ Database connection error:", err.message);
+});
 
-module.exports = { readData, saveData };
+module.exports = pool;

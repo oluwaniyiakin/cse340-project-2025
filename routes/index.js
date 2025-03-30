@@ -1,18 +1,23 @@
-/******************************************
- * Main Routes File for CSE Motors App
- * Handles Routing for Home, Inventory, and Static Pages
- ******************************************/
-
 const express = require("express");
 const router = express.Router();
-const baseController = require("../controllers/baseController"); // Base controller
+const baseController = require("../controllers/baseController");
 
-// Home Route
 router.get("/", baseController.buildHome);
-
-router.get("/trigger-error", (req, res, next) => {
-    throw new Error("This is a test error");
+// Home route: Render the homepage (index.ejs)
+router.get("/", (req, res) => {
+  res.render("index", { title: "Home" });
 });
 
+// Include static routes
+const staticRoutes = require("./static");
+router.use(staticRoutes);
+
+// Include inventory routes under "/inventory"
+const inventoryRoutes = require("./inventory");
+router.use("/inventory", inventoryRoutes);
+
+// Include error routes under "/error"
+const errorRoutes = require("./error");
+router.use("/error", errorRoutes);
 
 module.exports = router;
