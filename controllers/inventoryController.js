@@ -1,79 +1,145 @@
-<<<<<<< HEAD
+const utilities = require("../utilities/");
 const inventoryModel = require("../models/inventoryModel");
-const utilities = require("../utilities");
 
-/**
- * Controller to fetch and render the vehicle detail view.
- * It retrieves the vehicle by its inventory ID, formats price and mileage,
- * and passes all details to the view.
- */
-async function getVehicleDetail(req, res, next) {
-  try {
-    // Get the inventory ID from the URL parameters
-    const inv_id = req.params.inv_id;
-    
-    // Fetch the vehicle from the database
-    const vehicle = await inventoryModel.getVehicleById(inv_id);
-    
-    // If no vehicle is found, render a 404 error view
-    if (!vehicle) {
-      return res.status(404).render("errors/404", {
-        title: "Vehicle Not Found",
-        message: "Sorry, the vehicle you requested was not found."
-      });
+/* ****************************************
+ *  Render Inventory Management View
+ * *************************************** */
+async function renderInventory(req, res, next) {
+    try {
+        let nav = await utilities.getNav();
+        let inventoryList = await inventoryModel.getAllInventory();
+
+        res.render("inventory/manage", {
+            title: "Manage Inventory",
+            nav,
+            inventoryList,
+        });
+    } catch (error) {
+        console.error("Error rendering inventory:", error);
+        next(error); // Pass error to middleware
     }
-    
-    // Format price and mileage using utility functions
-    const formattedPrice = utilities.formatPrice(vehicle.inv_price);
-    const formattedMileage = utilities.formatMileage(vehicle.inv_miles);
-    
-    // Construct dynamic title from vehicle data
-    const pageTitle = `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`;
-    
-    // Render the vehicle detail view with all necessary data.
-    // Ensure your view (views/inventory/detail.ejs) displays:
-    // - Full-size image (vehicle.inv_image)
-    // - Vehicle details (make, model, year, price, mileage, description, etc.)
-    // - Additional vehicle specifications (lease info, fuel efficiency, exterior/interior color, etc.)
-    res.render("inventory/detail", {
-      title: pageTitle,
-      vehicle,            // All vehicle data from the database
-      formattedPrice,     // Price formatted as U.S. dollars
-      formattedMileage    // Mileage formatted with commas
-      // You can add more properties here if your view requires them (e.g., vehicle.inv_lease_info)
-    });
-  } catch (err) {
-    // Pass any error to the error-handling middleware
-    next(err);
-  }
 }
 
-module.exports = { getVehicleDetail };
-=======
-const fs = require('fs');
-const path = require('path');
+/* ****************************************
+ *  Render Add Classification View
+ * *************************************** */
+async function renderAddClassification(req, res, next) {
+    try {
+        let nav = await utilities.getNav();
 
-const getVehicles = () => {
-    const filePath = path.join(__dirname, '../data/vehicles.json');
-    const jsonData = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(jsonData);
-};
-
-// Fetch a specific vehicle by ID
-const getVehicleById = (id) => {
-    const vehicles = getVehicles();
-    return vehicles.find(vehicle => vehicle.inv_id == id);
-};
-
-// Controller to serve vehicle details
-exports.vehicleDetail = (req, res) => {
-    const vehicleId = req.params.id;
-    const vehicle = getVehicleById(vehicleId);
-
-    if (!vehicle) {
-        return res.status(404).send('Vehicle not found');
+        res.render("inventory/add-classification", {
+            title: "Add Classification",
+            nav,
+        });
+    } catch (error) {
+        console.error("Error rendering classification view:", error);
+        next(error);
     }
+}
 
-    res.render('inventory/vehicledetail', { vehicle, vehicles: getVehicles() });
+/* ****************************************
+ *  Render Add Inventory Item View
+ * *************************************** */
+async function renderAddInventory(req, res, next) {
+    try {
+        let nav = await utilities.getNav();
+        let classifications = await inventoryModel.getClassifications();
+
+        res.render("inventory/add-inventory", {
+            title: "Add Inventory Item",
+            nav,
+            classifications,
+        });
+    } catch (error) {
+        console.error("Error rendering add inventory view:", error);
+        next(error);
+    }
+}
+
+/* ****************************************
+ *  Process New Classification Submission
+ * *************************************** */
+async function addClassification(req, res, next) {
+    try {
+        const { classification_name } = req.body;
+        
+        if (!classification_name) {
+            req.flash("error", "Classification name is required.");
+            return res.redirect("/inventory/add-classification");
+        }
+
+        await inventoryModel.insertClassification(classification_name);
+
+        req.flash("success", "Classification added successfully!");
+        res.redirect("/inventory/manage");
+    } catch (error) {
+        console.error("Error adding classification:", error);
+        req.flash("error", "Failed to add classification.");
+        next(error);
+    }
+}
+
+/* ****************************************
+ *  Process New Inventory Item Submission
+ * *************************************** */
+async function addInventoryItem(req, res, next) {
+    try {
+        const { item_name, classification_id, quantity, price } = req.body;
+        
+        if (!item_name || !classification_id || !quantity || !price) {
+            req.flash("error", "All fields are required.");
+            return res.redirect("/inventory/add-inventory");
+        }
+
+        await inventoryModel.insertInventoryItem({
+            item_name,
+            classification_id,
+            quantity,
+            price,
+        });
+
+        req.flash("success", "Inventory item added successfully!");
+        res.redirect("/inventory/manage");
+    } catch (error) {
+        console.error("Error adding inventory item:", error);
+        req.flash("error", "Failed to add inventory item.");
+        next(error);
+    }
+}
+
+/* ****************************************
+ *  Render Inventory Details View
+ * *************************************** */
+async function renderInventoryDetails(req, res, next) {
+    try {
+        let nav = await utilities.getNav();
+        let itemId = req.params.id;
+        let itemDetails = await inventoryModel.getInventoryById(itemId);
+
+        if (!itemDetails) {
+            req.flash("error", "Inventory item not found.");
+            return res.redirect("/inventory/manage");
+        }
+
+        res.render("inventory/details", {
+            title: itemDetails.item_name,
+            nav,
+            itemDetails,
+        });
+    } catch (error) {
+        console.error("Error fetching inventory details:", error);
+        next(error);
+    }
+}
+
+/* ****************************************
+ *  Export Controller Functions
+ * *************************************** */
+module.exports = {
+    renderInventory,
+    renderAddClassification,
+    renderAddInventory,
+    addClassification,
+    addInventoryItem,
+    renderInventoryDetails,
 };
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2

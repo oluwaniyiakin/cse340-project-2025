@@ -1,7 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const vehicleController = require('../controllers/vehicleController');
+const vehicleController = require("../controllers/vehicleController"); // Ensure correct path
 
-router.get('/', vehicleController.buildHome);
+// Example route
+router.get("/", vehicleController.getAllVehicles); // Ensure this function exists
 
 module.exports = router;

@@ -1,82 +1,62 @@
-<<<<<<< HEAD
-const Util = {};
+const pool = require("../database"); // PostgreSQL database connection
 
-/**
- * Format a number as U.S. dollars.
- * @param {number} price - The price to format.
- * @returns {string} Formatted price, e.g., "$16,999.00"
- */
-Util.formatPrice = function (price) {
-  return `$${Number(price).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+/* ****************************************
+ *  Build the site navigation dynamically
+ * **************************************** */
+async function getNav() {
+    try {
+        const result = await pool.query("SELECT classification_id, classification_name FROM classification ORDER BY classification_name");
+        const classifications = result.rows;
+
+        let nav = `<ul>`;
+        nav += `<li><a href="/" title="Home">Home</a></li>`;
+
+        classifications.forEach(classification => {
+            nav += `<li><a href="/inventory/${classification.classification_id}" title="${classification.classification_name}">${classification.classification_name}</a></li>`;
+        });
+
+        nav += `</ul>`;
+        return nav;
+    } catch (error) {
+        console.error("Error generating navigation:", error);
+        throw error;
+    }
+}
+
+/* ****************************************
+ *  Middleware to handle flash messages
+ * **************************************** */
+function flashMessages(req, res, next) {
+    if (req.session.flashMessage) {
+        res.locals.flashMessage = req.session.flashMessage;
+        delete req.session.flashMessage;
+    }
+    next();
+}
+
+/* ****************************************
+ *  Middleware to handle errors gracefully
+ * **************************************** */
+function errorHandler(err, req, res, next) {
+    console.error("Server Error:", err);
+    res.status(500).render("errors/500", { title: "Server Error", message: "Something went wrong. Please try again later." });
+}
+
+/* ****************************************
+ *  Middleware for checking authentication
+ * **************************************** */
+function checkAuth(req, res, next) {
+    if (!req.session.user) {
+        req.session.flashMessage = "You must be logged in to access this page.";
+        return res.redirect("/account/login");
+    }
+    next();
+}
+
+module.exports = {
+    getNav,
+    flashMessages,
+    errorHandler,
+    checkAuth
 };
 
-/**
- * Format mileage with commas.
- * @param {number} mileage - The mileage to format.
- * @returns {string} Formatted mileage, e.g., "74,750"
- */
-Util.formatMileage = function (mileage) {
-  return Number(mileage).toLocaleString('en-US');
-};
-
-/**
- * Build dynamic HTML for the vehicle detail view.
- * @param {Object} vehicle - Vehicle data from the database.
- * @returns {string} HTML string containing vehicle detail.
- */
-Util.buildVehicleDetailHTML = function (vehicle) {
-  return `
-    <div class="vehicle-detail">
-      <div class="vehicle-main-image">
-        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
-      </div>
-      <div class="vehicle-info">
-        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-        <p class="price">Price: ${Util.formatPrice(vehicle.inv_price)}</p>
-        <p class="mileage">Mileage: ${Util.formatMileage(vehicle.inv_miles)} miles</p>
-        <p class="description">${vehicle.inv_description}</p>
-        <p class="certification">Certification and Inspection: The vehicle has been inspected by an ASE-certified technician, indicating it meets quality standards.</p>
-      </div>
-    </div>
-  `;
-};
-
-/**
- * getNav - Returns dynamic navigation bar HTML.
- * For now, returns a static navigation bar.
- * @returns {Promise<string>} A promise that resolves to a navigation bar HTML string.
- */
-Util.getNav = async function () {
-  // In a production app, you might dynamically build the nav from the database.
-  return `
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/inventory">Inventory</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-    </nav>
-  `;
-};
-
-/**
- * handleErrors - Higher-Order Function for handling errors in asynchronous route handlers.
- * @param {Function} fn - An asynchronous function (route handler).
- * @returns {Function} A new function that wraps the async function with error handling.
- */
-Util.handleErrors = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
-
-module.exports = Util;
-=======
-const formatPrice = (price) => {
-    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-  };
-  
-  const formatMileage = (mileage) => {
-    return mileage.toLocaleString('en-US');
-  };
-  
-  module.exports = { formatPrice, formatMileage };
-  
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2

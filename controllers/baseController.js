@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const vehicleModel = require("../models/vehicleModel"); // Import the model
 const utilities = require("../utilities");
 
@@ -13,9 +12,6 @@ async function buildHome(req, res, next) {
         // Fetch vehicles from the database
         const vehicles = await vehicleModel.getAllVehicles();
 
-        // Debugging: Log fetched vehicles
-        console.log("Vehicles fetched:", vehicles);
-
         // Render the home page with flash message, navigation, and vehicles
         res.render("index", { 
             title: "Home", 
@@ -28,17 +24,5 @@ async function buildHome(req, res, next) {
         next(error); // Pass the error to the middleware
     }
 }
-=======
-const fs = require('fs');
-const path = require('path');
 
-const vehiclesFilePath = path.join(__dirname, '../data/vehicles.json');
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
-
-const getHomePage = (req, res) => {
-    const vehicles = JSON.parse(fs.readFileSync(vehiclesFilePath, 'utf-8'));
-    
-    res.render('home', { vehicles });
-};
-
-module.exports = { getHomePage };
+module.exports = { buildHome };

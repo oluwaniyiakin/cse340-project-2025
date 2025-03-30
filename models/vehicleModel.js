@@ -1,45 +1,90 @@
-<<<<<<< HEAD
-const db = require("../config/database");
+const pool = require("../database"); // PostgreSQL connection pool
 
-/**
- * Fetch all vehicles from the database.
- * Limits results to 10 for performance.
- */
+/* ****************************************
+ *  Get all vehicles from the database
+ * **************************************** */
 async function getAllVehicles() {
-  try {
-    const result = await db.query("SELECT * FROM vehicles LIMIT 10");
-
-    // Debugging: Log fetched vehicles
-    console.log("Query result:", result.rows);
-
-    return result.rows;
-  } catch (error) {
-    console.error("Error fetching vehicles:", error);
-    throw error; // Ensures errors propagate properly
-  }
-}
-
-module.exports = { getAllVehicles };
-=======
-const fs = require("fs");
-const path = require("path");
-
-const vehiclesFilePath = path.join(__dirname, "../data/vehicles.json");
-
-function getAllVehicles() {
     try {
-        const data = fs.readFileSync(vehiclesFilePath, "utf-8");
-        return JSON.parse(data);
+        const result = await pool.query("SELECT * FROM vehicles ORDER BY make, model");
+        return result.rows;
     } catch (error) {
-        console.error("❌ Error reading vehicles JSON:", error);
-        return [];
+        console.error("Database error - getAllVehicles:", error);
+        throw error;
     }
 }
 
-function getVehicleById(id) {
-    const vehicles = getAllVehicles();
-    return vehicles.find(vehicle => vehicle.inv_id == id);
+/* ****************************************
+ *  Get vehicle by ID
+ * **************************************** */
+async function getVehicleById(vehicleId) {
+    try {
+        const result = await pool.query("SELECT * FROM vehicles WHERE vehicle_id = $1", [vehicleId]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error("Database error - getVehicleById:", error);
+        throw error;
+    }
 }
 
-module.exports = { getAllVehicles, getVehicleById };
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
+/* ****************************************
+ *  Create a new vehicle
+ * **************************************** */
+async function createVehicle({ make, model, year, price, mileage, description }) {
+    try {
+        const query = `
+            INSERT INTO vehicles (make, model, year, price, mileage, description)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *;
+        `;
+        const values = [make, model, year, price, mileage, description];
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    } catch (error) {
+        console.error("Database error - createVehicle:", error);
+        throw error;
+    }
+}
+
+/* ****************************************
+ *  Update an existing vehicle
+ * **************************************** */
+async function updateVehicle(vehicleId, updatedData) {
+    try {
+        const { make, model, year, price, mileage, description } = updatedData;
+
+        const query = `
+            UPDATE vehicles 
+            SET make = $1, model = $2, year = $3, price = $4, mileage = $5, description = $6
+            WHERE vehicle_id = $7
+            RETURNING *;
+        `;
+        const values = [make, model, year, price, mileage, description, vehicleId];
+        const result = await pool.query(query, values);
+
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error("Database error - updateVehicle:", error);
+        throw error;
+    }
+}
+
+/* ****************************************
+ *  Delete a vehicle
+ * **************************************** */
+async function deleteVehicle(vehicleId) {
+    try {
+        const result = await pool.query("DELETE FROM vehicles WHERE vehicle_id = $1 RETURNING *;", [vehicleId]);
+        return result.rows[0] ? true : false;
+    } catch (error) {
+        console.error("Database error - deleteVehicle:", error);
+        throw error;
+    }
+}
+
+module.exports = {
+    getAllVehicles,
+    getVehicleById,
+    createVehicle,
+    updateVehicle,
+    deleteVehicle
+};

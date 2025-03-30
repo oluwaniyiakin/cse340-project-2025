@@ -1,30 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/styles.css">
+  <%- include("partials/head") %>
+  <title><%= title %> | CSE Motors</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <header>
-        <h1>Vehicle Inventory</h1>
-    </header>
 
-    <main>
-        <% if (vehicles.length > 0) { %>
-            <ul>
-                <% vehicles.forEach(vehicle => { %>
-                    <li>
-                        <a href="/inventory/<%= vehicle.id %>">
-                            <%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %> - $<%= vehicle.price.toLocaleString() %>
-                        </a>
-                    </li>
-                <% }) %>
-            </ul>
-        <% } else { %>
-            <p>No vehicles available at this time.</p>
-        <% } %>
-    </main>
+  <%- include("partials/header") %>
+  <%- include("partials/nav") %>
+
+  <main>
+    <h1>Welcome to CSE Motors!</h1>
+
+    <!-- ✅ Render Flash Messages (if available) -->
+    <% if (notice && notice.length > 0) { %>
+      <div class="flash-message">
+        <p><%= notice %></p>
+      </div>
+    <% } %>
+
+    <p>Explore our inventory and discover your next vehicle.</p>
+
+    <!-- ✅ Display Vehicles -->
+    <section class="vehicle-list">
+      <% if (vehicles && vehicles.length > 0) { %>
+        <div class="vehicle-grid">
+          <% vehicles.forEach(vehicle => { %>
+            <div class="vehicle-card">
+              <img src="/images/vehicles/<%= vehicle.image.replace('/images/vehicles/', '') %>" 
+                   alt="<%= vehicle.name %>" 
+                   onerror="this.onerror=null; this.src='/images/vehicles/no-image.JPG';">
+              
+              <div class="vehicle-details">
+                <h3><%= vehicle.name %></h3>
+                <p><strong>Price:</strong> $<%= vehicle.price.toLocaleString() %></p>
+                <p><strong>Type:</strong> <%= vehicle.type %></p>
+                <p><strong>Year:</strong> <%= vehicle.year %></p>
+                <p><strong>Mileage:</strong> <%= vehicle.mileage %> miles</p>
+                <p><strong>Description:</strong> <%= vehicle.description %></p>
+                <a href="/inventory/<%= vehicle.id %>">View Details</a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p>No vehicles available at the moment.</p>
+      <% } %>
+    </section>
+  </main>
+
+  <%- include("partials/footer") %>
+
 </body>
 </html>
