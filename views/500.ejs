@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>500 - Server Error</title>
     <link rel="stylesheet" href="/css/styles.css">
+
 </head>
 <body>
     <header>
-        <%- include("partials/header") %>
+        <%- include('partials/footer') %>  <!-- Correct relative path -->
 
     </header>
     <main>
@@ -17,7 +18,7 @@
         <a href="/">Return Home</a>
     </main>
     <footer>
-        <%- include('../partials/footer') %>
+        <%- include('partials/footer') %>
     </footer>
 </body>
 </html>

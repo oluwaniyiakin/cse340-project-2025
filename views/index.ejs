@@ -1,148 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
-  <%- include("partials/head") %>
-  <title><%= title %> | CSE Motors</title>
-  <link rel="stylesheet" href="/css/styles.css">
-=======
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | Vehicle Inventory</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <style>
-        /* Styles for the vehicle list layout */
-        .vehicle-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .vehicle-card {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #fff;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .vehicle-card img {
-            width: 200px; /* Adjust the width of the image */
-            height: auto;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-        .vehicle-info {
-            flex-grow: 1;
-        }
-        .vehicle-info h3 {
-            margin: 0;
-            font-size: 20px;
-            color: #333;
-        }
-        .vehicle-info p {
-            margin: 5px 0;
-            font-size: 16px;
-            color: #555;
-        }
-        .details-btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 12px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .details-btn:hover {
-            background: #0056b3;
-        }
-        .no-vehicles {
-            text-align: center;
-            font-size: 18px;
-            color: #888;
-        }
-    </style>
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
+    <%- include('partials/head') %>  <!-- Include head partial -->
 </head>
 <body>
+    
+    <header>
+        <%- include('partials/header') %>  <!-- Include header partial -->
+    </header>
 
-  <%- include("partials/header") %>
-  <%- include("partials/nav") %>
+    <nav>
+        <%- include('partials/nav') %>  <!-- Include navigation partial -->
+    </nav>
 
-<<<<<<< HEAD
-  <main>
-    <h1>Welcome to CSE Motors!</h1>
-
-    <!-- ✅ Render Flash Messages (if available) -->
-    <% if (typeof notice !== 'undefined' && notice.length > 0) { %>
-      <div class="flash-message">
-        <p><%= notice %></p>
-      </div>
-    <% } %>
-
-    <p>Explore our inventory and discover your next vehicle.</p>
-
-    <!-- ✅ Display Vehicles -->
-    <section class="vehicle-list">
-      <% if (typeof vehicles !== 'undefined' && vehicles.length > 0) { %>
-        <div class="vehicle-grid">
-          <% vehicles.forEach(vehicle => { %>
-            <div class="vehicle-card">
-              <a href="/inventory/detail/<%= vehicle.inv_id || vehicle.id %>">
-                <img src="/images/vehicles/<%= vehicle.inv_thumbnail || 'no-image.JPG' %>" 
-                     alt="<%= vehicle.inv_make || vehicle.make || 'Unknown Make' %> <%= vehicle.inv_model || vehicle.model || 'Unknown Model' %>"
-                     onerror="this.onerror=null; this.src='/images/vehicles/no-image.JPG';">
-                
-                <div class="vehicle-details">
-                  <h3><%= vehicle.inv_make || vehicle.make || 'Unknown Make' %> <%= vehicle.inv_model || vehicle.model || 'Unknown Model' %></h3>
-                  <p><strong>Price:</strong> $<%= vehicle.price ? vehicle.price.toLocaleString() : 'N/A' %></p>
-                  <p><strong>Type:</strong> <%= vehicle.type || 'N/A' %></p>
-                  <p><strong>Year:</strong> <%= vehicle.year || 'N/A' %></p>
-                  <p><strong>Mileage:</strong> <%= vehicle.mileage ? vehicle.mileage.toLocaleString() + ' miles' : 'N/A' %></p>
-                  <p><strong>Description:</strong> <%= vehicle.description || 'No description available' %></p>
-                </div>
-              </a>
-            </div>
-          <% }) %>
-        </div>
-      <% } else { %>
-        <p>No vehicles available at this time.</p>
-      <% } %>
-    </section>
-  </main>
-
-  <%- include("partials/footer") %>
-=======
-        <section class="inventory">
-            <h2>Available Vehicles</h2>
-
-            <% if (vehicles && vehicles.length > 0) { %>
-                <div class="vehicle-list">
-                    <% vehicles.forEach(vehicle => { %>
-                        <div class="vehicle-card">
-                            <a href="/inventory/<%= vehicle.id %>">
-                                <img src="/images/vehicles/<%= vehicle.image || 'default.jpg' %>" 
-                                    alt="<%= vehicle.make %> <%= vehicle.model %>">
-                            </a>
-                            <div class="vehicle-info">
-                                <h3><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h3>
-                                <p class="price"><strong>Price:</strong> $<%= vehicle.price ? vehicle.price.toLocaleString() : 'N/A' %></p>
-                                <p class="mileage"><strong>Mileage:</strong> <%= vehicle.mileage ? vehicle.mileage.toLocaleString() : 'N/A' %> miles</p>
-                                <a class="details-btn" href="/inventory/<%= vehicle.id %>">View Details</a>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            <% } else { %>
-                <p class="no-vehicles">🚗 No vehicles available at the moment. Please check back later!</p>
-            <% } %>
-
-        </section>
+    <main>
+        <h1>Welcome to CSE Motors</h1>
+        <p>The best place for custom and high-performance vehicles.</p>
     </main>
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
+
+    <footer>
+        <%- include('partials/footer') %>  <!-- Include footer partial -->
+    </footer>
 
 </body>
 </html>

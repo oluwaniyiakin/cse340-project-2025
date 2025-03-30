@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const db = require("../config/database");
 
 /**
@@ -15,18 +14,6 @@ async function getVehicleById(inv_id) {
     console.error("Error fetching vehicle by ID:", error);
     throw error;
   }
-=======
-const pool = require("../db");
-
-async function getVehicleById(inventoryId) {
-    try {
-        const result = await pool.query("SELECT * FROM inventory WHERE inventory_id = $1", [inventoryId]);
-        return result.rows[0] || null;
-    } catch (error) {
-        console.error("❌ Database query error:", error);
-        return null;
-    }
->>>>>>> d9ce623bd073062dc418caa107ad7638d1eaa0c2
 }
 
 module.exports = { getVehicleById };

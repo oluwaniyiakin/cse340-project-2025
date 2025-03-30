@@ -1,8 +1,9 @@
-require("dotenv").config();
+require("dotenv").config(); 
 const express = require("express");
 const path = require("path");
 const { Pool } = require("pg"); // ✅ Import PostgreSQL client
 const vehicleRoutes = require("./routes/vehicleRoutes"); // ✅ Import vehicle routes
+const accountRoutes = require("./routes/accountRoutes"); // ✅ Import account routes
 
 const app = express();
 
@@ -16,7 +17,8 @@ const pool = new Pool({
 });
 
 // ✅ Middleware
-app.use(express.json()); // Parses JSON
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
 
 // ✅ Serve Static Files (CSS, Images, JS)
@@ -26,15 +28,17 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// ✅ Vehicle Routes
+// ✅ Register Routes
 app.use("/vehicles", vehicleRoutes);
+app.use("/account", accountRoutes); // 🔥 Handles /account/login & /account/register
 
 // ✅ Home Page Route (Fetch Vehicles from PostgreSQL)
 app.get("/", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM vehicles"); // ✅ Fetch data from `vehicles` table
         const vehicles = result.rows; // ✅ Get rows from query result
-        res.render("vehicle-list", { vehicles }); // ✅ Render vehicle list view
+        res.render("vehicle-list", { vehicles, notice: "" }); // Ensures `notice` exists
+
     } catch (error) {
         console.error("❌ Error loading vehicle data:", error);
         res.status(500).send("Error loading vehicle data");
