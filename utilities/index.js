@@ -1,79 +1,100 @@
-const pool = require("../database"); // PostgreSQL database connection
+const inventoryModel = require("../models/inventoryModel")
+const utilities = {}
 
-/* ****************************************
- *  Build the site navigation dynamically
- * **************************************** */
-async function getNav() {
-    try {
-        const result = await pool.query(
-            "SELECT classification_id, classification_name FROM classification ORDER BY classification_name"
-        );
-        const classifications = result.rows;
+/* ************************
+ * Constructs the nav HTML unordered list
+ ************************** */
+utilities.getNav = async function (req, res, next) {
+  let data = await inventoryModel.getClassifications()
+  let list = "<ul>"
+  list += '<li><a href="/" title="Home page">Home</a></li>'
+  data.rows.forEach((row) => {
+    list += "<li>"
+    list +=
+      '<a href="/inventory/type/' +
+      row.classification_id +
+      '" title="See our inventory of ' +
+      row.classification_name +
+      ' vehicles">' +
+      row.classification_name +
+      "</a>"
+    list += "</li>"
+  })
+  list += "</ul>"
+  return list
+}
 
-        let nav = `<ul>`;
-        nav += `<li><a href="/" title="Home">Home</a></li>`;
-
-        classifications.forEach((classification) => {
-            nav += `<li><a href="/inventory/${classification.classification_id}" title="${classification.classification_name}">${classification.classification_name}</a></li>`;
-        });
-
-        nav += `</ul>`;
-        return nav;
-    } catch (error) {
-        console.error("❌ Error generating navigation:", error);
-        throw error;
-    }
+/* **************************************
+* Build the classification view HTML
+* ************************************ */
+utilities.buildClassificationGrid = async function (data) {
+  let grid
+  if (data.length > 0) {
+    grid = '<ul id="inv-display">'
+    data.forEach(vehicle => {
+      grid += '<li>'
+      grid += '<a href="../../inventory/detail/' + vehicle.inv_id
+        + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model
+        + 'details"><img src="' + vehicle.inv_thumbnail
+        + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
+        + ' on CSE Motors" /></a>'
+      grid += '<div class="namePrice">'
+      grid += '<hr />'
+      grid += '<h2>'
+      grid += '<a href="../../inventory/detail/' + vehicle.inv_id + '" title="View '
+        + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
+        + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+      grid += '</h2>'
+      grid += '<span>$'
+        + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+      grid += '</div>'
+      grid += '</li>'
+    })
+    grid += '</ul>'
+  } else {
+    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+  }
+  return grid
 }
 
 /* ****************************************
- *  Middleware to handle flash messages
- * **************************************** */
-function flashMessages(req, res, next) {
-    if (req.session.flashMessage) {
-        res.locals.flashMessage = req.session.flashMessage;
-        delete req.session.flashMessage;
-    }
-    next();
+ * Middleware For Handling Errors
+ * Wrap other function in this for 
+ * General Error Handling
+ **************************************** */
+utilities.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+
+utilities.buildSingleVehicleDisplay = async (vehicle) => {
+  let svd = '<section id="vehicle-display">'
+  svd += "<div>"
+  svd += '<section class="imagePrice">'
+  svd +=
+    "<img src='" +
+    vehicle.inv_image +
+    "' alt='Image of " +
+    vehicle.inv_make +
+    " " +
+    vehicle.inv_model +
+    " on cse motors' id='mainImage'>"
+  svd += "</section>"
+  svd += '<section class="vehicleDetail">'
+  svd += "<h3> " + vehicle.inv_make + " " + vehicle.inv_model + " Details</h3>"
+  svd += '<ul id="vehicle-details">'
+  svd +=
+    "<li><h4>Price: $" +
+    new Intl.NumberFormat("en-US").format(vehicle.inv_price) +
+    "</h4></li>"
+  svd += "<li><h4>Description:</h4> " + vehicle.inv_description + "</li>"
+  svd += "<li><h4>Color:</h4> " + vehicle.inv_color + "</li>"
+  svd +=
+    "<li><h4>Miles:</h4> " +
+    new Intl.NumberFormat("en-US").format(vehicle.inv_miles) +
+    "</li>"
+  svd += "</ul>"
+  svd += "</section>"
+  svd += "</div>"
+  svd += "</section>"
+  return svd
 }
 
-/* ****************************************
- *  Middleware to handle errors gracefully
- * **************************************** */
-function errorHandler(err, req, res, next) {
-    console.error("❌ Server Error:", err);
-    res.status(500).render("errors/500", {
-        title: "Server Error",
-        message: "Something went wrong. Please try again later.",
-    });
-}
-
-/* ****************************************
- *  Middleware for checking authentication
- * **************************************** */
-function checkAuth(req, res, next) {
-    if (!req.session.user) {
-        req.session.flashMessage = "You must be logged in to access this page.";
-        return res.redirect("/account/login");
-    }
-    next();
-}
-
-/* ****************************************
- *  Function to handle async errors
- * **************************************** */
-function handleErrors(fn) {
-    return function (req, res, next) {
-        Promise.resolve(fn(req, res, next)).catch(next);
-    };
-}
-
-/* ****************************************
- *  Export all utilities correctly
- * **************************************** */
-module.exports = {
-    getNav,
-    flashMessages,
-    errorHandler,
-    checkAuth,
-    handleErrors, // ✅ Now properly included
-};
+module.exports = utilities

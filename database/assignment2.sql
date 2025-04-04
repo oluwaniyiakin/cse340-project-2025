@@ -1,29 +1,14 @@
--- 1. Insert Tony Stark Record 
-INSERT INTO public.account (account_firstname, account_lastname, account_email, account_password)
-VALUES ('Tony', 'Stark', 'tony@starkent.com', 'Iam1ronM@n');
+INSERT INTO account (account_firstname, account_lastname, account_email, account_password) Values ('Tony', 'Stark', 'tony@starkent.com', ' Iam1ronM@n');
 
--- 2. Modify Tony Stark’s Account Type
-UPDATE public.account 
-SET account_type = 'Admin' 
-WHERE account_email = 'tony@starkent.com';
+UPDATE account SET account_type = 'Admin' WHERE account_id = 1;
 
--- 3. Delete Tony Stark’s Account
-DELETE FROM public.account 
-WHERE account_email = 'tony@starkent.com';
+DELETE FROM account WHERE account_id = 1;
 
--- 4. Modify the "GM Hummer" Description
-UPDATE public.inventory 
-SET inv_description = REPLACE(inv_description, 'small interiors', 'a huge interior') 
-WHERE inv_make = 'GM' AND inv_model = 'Hummer';
+UPDATE inventory SET inv_description = replace(inv_description, 'small interiors', 'a huge interior') WHERE inv_id = 10;
 
--- 5. Select Inventory Data with Classification Name (JOIN)
-SELECT inv.inv_make, inv.inv_model, class.classification_name 
-FROM public.inventory inv
-INNER JOIN public.classification class 
-ON inv.classification_id = class.classification_id 
-WHERE class.classification_name = 'Sport';
+SELECT inv_make, inv_model, c.classification_name
+FROM inventory i
+INNER JOIN classification c ON i.classification_id = c.classification_id
+WHERE i.classification_id = 2;
 
--- 6. Update Image Paths in Inventory Table
-UPDATE public.inventory 
-SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
-    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+UPDATE inventory SET inv_image=replace(inv_image,'/images','/images/vehicles'), inv_thumbnail=replace(inv_thumbnail, '/images', '/images/vehicles');

@@ -10,18 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^2.2.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.21.2",
+    "express": "^4.21.0",
     "express-ejs-layouts": "^2.5.1",
-    "express-flash": "^0.0.2",
-    "express-session": "^1.18.1",
-    "express-validator": "^7.2.1",
-    "morgan": "^1.10.0",
-    "pg": "^8.13.3"
+    "pg": "^8.13.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
-  }
+    "nodemon": "^3.1.7"
+  },
+  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
 }
