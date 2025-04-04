@@ -1,71 +1,77 @@
 /* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
+ * This server.js file is the primary entry 
+ * point of the application. It controls 
+ * routing, views, middleware, and error handling.
  *******************************************/
+
 /* ***********************
  * Require Statements
  *************************/
+require("dotenv").config()
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
-const env = require("dotenv").config()
+
 const app = express()
-const static = require("./routes/static")
+
+const staticRoutes = require("./routes/static")
+const inventoryRoutes = require("./routes/inventoryRoute")
 const baseController = require("./controllers/baseController")
-const inventoryRoute = require("./routes/inventoryRoute")
-const utilities = require("./utilities/")
+const utilities = require("./utilities")
 
 /* ***********************
  * View Engine and Templates
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+app.set("layout", "./layouts/layout") // layout not in views root
+
+/* ***********************
+ * Middleware
+ *************************/
+app.use(express.static("public"))
+app.use(staticRoutes)
 
 /* ***********************
  * Routes
  *************************/
-app.use(static)
-
-// Index route
+// Home page
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use("/inventory", inventoryRoute)
+app.use("/inventory", inventoryRoutes)
 
-// File Not Found Route - must be last route in list
+/* ***********************
+ * File Not Found Route
+ * This must be the last route
+ *************************/
 app.use(async (req, res, next) => {
-  next({ status: 404, message: 'Sorry, we appear to have lost that page.' })
+  next({ status: 404, message: "Sorry, we appear to have lost that page." })
 })
 
 /* ***********************
-* Express Error Handler
-* Place after all other middleware
-*************************/
+ * Error Handling Middleware
+ * This handles any errors thrown in the app
+ *************************/
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if (err.status == 404) {
-    message = err.message
-  } else {
-    message = "Oh no! There was a crash. Maybe try a different route?"
-  }
-  res.render("errors/error", {
-    title: err.status || "Server Error",
+  const status = err.status || 500
+  const message = err.message || "Oh no! There was a crash. Maybe try a different route?"
+
+  console.error(`Error at "${req.originalUrl}": ${message}`)
+
+  res.status(status).render("errors/error", {
+    title: status,
     message,
     nav,
   })
 })
 
 /* ***********************
- * Local Server Information
- * Values from .env (environment) file
+ * Server Initialization
  *************************/
-const port = process.env.PORT
-const host = process.env.HOST
+const port = process.env.PORT || 3000
+const host = process.env.HOST || "localhost"
 
-/* ***********************
- * Log statement to confirm server operation
- *************************/
 app.listen(port, () => {
-  console.log(`app listening on ${host}:${port}`)
+  console.log(`App listening on http://${host}:${port}`)
 })
