@@ -1,30 +1,24 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
-/* ***************
- * Connection Pool
- * - In development, we disable SSL for local testing.
- * - In production (Render PostgreSQL), we enable SSL.
- * *************** */
-const isDevelopment = process.env.NODE_ENV === "development";
-
+// Always enable SSL for databases like Render
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: isDevelopment ? false : { rejectUnauthorized: false },
+  ssl: {
+    rejectUnauthorized: false, // allow self-signed certs (Render requirement)
+  },
 });
 
-// Added for troubleshooting queries during development
 const db = {
-  async query(text, params) {
+  query: async (text, params) => {
     try {
       const res = await pool.query(text, params);
       return res;
     } catch (error) {
-      console.error("Error in query", { text, error });
+      console.error("❌ Error in query", { text, error });
       throw error;
     }
-  },
+  }
 };
 
-// Export the correct pool object
-module.exports = isDevelopment ? db : pool;
+module.exports = db;
