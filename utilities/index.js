@@ -1,73 +1,106 @@
-const inventoryModel = require("../models/inventoryModel")
-const utilities = {}
+const inventoryModel = require("../models/inventoryModel");
+const utilities = {};
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
-utilities.getNav = async function (req, res, next) {
-  let data = await inventoryModel.getClassifications()
-  let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
-  data.rows.forEach((row) => {
-    list += "<li>"
-    list +=
-      '<a href="/inventory/type/' +
-      row.classification_id +
-      '" title="See our inventory of ' +
-      row.classification_name +
-      ' vehicles">' +
-      row.classification_name +
-      "</a>"
-    list += "</li>"
-  })
-  list += "</ul>"
-  return list
-}
+utilities.getNav = async function (req, res) {
+  try {
+    const data = await inventoryModel.getClassifications();
+    
+    // Check if data or data.rows is undefined or empty
+    if (!data || !data.rows || data.rows.length === 0) {
+      console.error("No classifications found in the database.");
+      return res.status(500).send("No classifications found"); // Use res directly
+    }
+
+    let list = "<ul>";
+    list += '<li><a href="/" title="Home page">Home</a></li>';
+
+    data.rows.forEach((row) => {
+      list += "<li>";
+      list +=
+        '<a href="/inventory/type/' +
+        row.classification_id +
+        '" title="See our inventory of ' +
+        row.classification_name +
+        ' vehicles">' +
+        row.classification_name +
+        "</a>";
+      list += "</li>";
+    });
+
+    list += "</ul>";
+    res.send(list);  // Send the list back in the response
+  } catch (error) {
+    console.error("Error in getNav:", error);
+    res.status(500).send("Internal server error");  // Send the error directly as a response
+  }
+};
 
 /* **************************************
 * Build the classification view HTML
 * ************************************ */
 utilities.buildClassificationGrid = async function (data) {
-  let grid
+  let grid;
   if (data.length > 0) {
-    grid = '<ul id="inv-display">'
-    data.forEach(vehicle => {
-      grid += '<li>'
-      grid += '<a href="../../inventory/detail/' + vehicle.inv_id
-        + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model
-        + 'details"><img src="' + vehicle.inv_thumbnail
-        + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
-        + ' on CSE Motors" /></a>'
-      grid += '<div class="namePrice">'
-      grid += '<hr />'
-      grid += '<h2>'
-      grid += '<a href="../../inventory/detail/' + vehicle.inv_id + '" title="View '
-        + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
-        + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-      grid += '</h2>'
-      grid += '<span>$'
-        + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-      grid += '</div>'
-      grid += '</li>'
-    })
-    grid += '</ul>'
+    grid = '<ul id="inv-display">';
+    data.forEach((vehicle) => {
+      grid += '<li>';
+      grid +=
+        '<a href="../../inventory/detail/' +
+        vehicle.inv_id +
+        '" title="View ' +
+        vehicle.inv_make +
+        ' ' +
+        vehicle.inv_model +
+        ' details"><img src="' +
+        vehicle.inv_thumbnail +
+        '" alt="Image of ' +
+        vehicle.inv_make +
+        ' ' +
+        vehicle.inv_model +
+        ' on CSE Motors" /></a>';
+      grid += '<div class="namePrice">';
+      grid += "<hr />";
+      grid += "<h2>";
+      grid +=
+        '<a href="../../inventory/detail/' +
+        vehicle.inv_id +
+        '" title="View ' +
+        vehicle.inv_make +
+        ' ' +
+        vehicle.inv_model +
+        ' details">' +
+        vehicle.inv_make +
+        " " +
+        vehicle.inv_model +
+        "</a>";
+      grid += "</h2>";
+      grid +=
+        '<span>$' + new Intl.NumberFormat("en-US").format(vehicle.inv_price) + "</span>";
+      grid += "</div>";
+      grid += "</li>";
+    });
+    grid += "</ul>";
   } else {
-    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>';
   }
-  return grid
-}
+  return grid;
+};
 
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
  * General Error Handling
  **************************************** */
-utilities.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+utilities.handleErrors = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);  // Keep this for other middleware handling
 
 utilities.buildSingleVehicleDisplay = async (vehicle) => {
-  let svd = '<section id="vehicle-display">'
-  svd += "<div>"
-  svd += '<section class="imagePrice">'
+  let svd = "<section id='vehicle-display'>";
+  svd += "<div>";
+  svd += "<section class='imagePrice'>";
   svd +=
     "<img src='" +
     vehicle.inv_image +
@@ -75,26 +108,22 @@ utilities.buildSingleVehicleDisplay = async (vehicle) => {
     vehicle.inv_make +
     " " +
     vehicle.inv_model +
-    " on cse motors' id='mainImage'>"
-  svd += "</section>"
-  svd += '<section class="vehicleDetail">'
-  svd += "<h3> " + vehicle.inv_make + " " + vehicle.inv_model + " Details</h3>"
-  svd += '<ul id="vehicle-details">'
+    " on cse motors' id='mainImage'>";
+  svd += "</section>";
+  svd += "<section class='vehicleDetail'>";
+  svd += "<h3> " + vehicle.inv_make + " " + vehicle.inv_model + " Details</h3>";
+  svd += "<ul id='vehicle-details'>";
   svd +=
-    "<li><h4>Price: $" +
-    new Intl.NumberFormat("en-US").format(vehicle.inv_price) +
-    "</h4></li>"
-  svd += "<li><h4>Description:</h4> " + vehicle.inv_description + "</li>"
-  svd += "<li><h4>Color:</h4> " + vehicle.inv_color + "</li>"
+    "<li><h4>Price: $" + new Intl.NumberFormat("en-US").format(vehicle.inv_price) + "</h4></li>";
+  svd += "<li><h4>Description:</h4> " + vehicle.inv_description + "</li>";
+  svd += "<li><h4>Color:</h4> " + vehicle.inv_color + "</li>";
   svd +=
-    "<li><h4>Miles:</h4> " +
-    new Intl.NumberFormat("en-US").format(vehicle.inv_miles) +
-    "</li>"
-  svd += "</ul>"
-  svd += "</section>"
-  svd += "</div>"
-  svd += "</section>"
-  return svd
-}
+    "<li><h4>Miles:</h4> " + new Intl.NumberFormat("en-US").format(vehicle.inv_miles) + "</li>";
+  svd += "</ul>";
+  svd += "</section>";
+  svd += "</div>";
+  svd += "</section>";
+  return svd;
+};
 
-module.exports = utilities
+module.exports = utilities;
