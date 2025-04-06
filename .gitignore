@@ -67,3 +67,5 @@ coverage/
 *.zip
 .idea/
 *.iml
+
+node_modules/
