@@ -1,9 +1,16 @@
-<% if (title) { %>
+<% if (title) { %> 
     <h1><%= title %></h1>
-<% } else {
-    res.redirect('/')
-} %>
-
-<%# messages() %>
-
-<%- grid %>
+  <% } else { 
+    res.redirect('/'); 
+    return;
+  } %>
+  
+  <%# Display any messages (flash or others) %>
+  <%- messages() %>
+  
+  <% if (grid && grid.trim() !== "") { %>
+    <%- grid %>
+  <% } else { %>
+    <p>No vehicles found in this classification.</p>
+  <% } %>
+  
