@@ -3,6 +3,7 @@ const router = new express.Router();
 const { check, validationResult } = require("express-validator");
 const utilities = require("../utilities/");
 const inventoryController = require("../controllers/inventoryController");
+const validationMiddleware = require('../middleware/validationMiddleware');
 
 // Route to build inventory management view
 router.get("/", inventoryController.buildManagement);

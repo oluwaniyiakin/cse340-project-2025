@@ -4,66 +4,135 @@
 
 <% if (errors && errors.length > 0) { %>
   <ul class="error-messages">
-    <% errors.forEach(error => { %>
+    <% errors.forEach(function(error) { %>
       <li><%= error.msg %></li>
     <% }) %>
   </ul>
 <% } %>
 
-<form action="/inventory/add-inventory" method="post">
+<form action="/inventory/add" method="POST" id="add-inventory-form">
   <!-- Classification Dropdown -->
   <label for="classification_id">Classification</label>
   <select name="classification_id" id="classification_id" required>
-    <option value="">Select Classification</option>
-    <% if (Array.isArray(classificationList) && classificationList.length > 0) { %>
-      <% classificationList.forEach(classification => { %>
-        <option value="<%= classification.classification_id %>"
-          <%= classification.classification_id == stickyData.classification_id ? 'selected' : '' %> >
+    <option value="">-- Select a Classification --</option>
+    <% if (classifications && classifications.length > 0) { %>
+      <% classifications.forEach(function(classification) { %>
+        <option value="<%= classification.classification_id %>" 
+          <%= stickyData.classification_id == classification.classification_id ? 'selected' : '' %>>
           <%= classification.classification_name %>
         </option>
-      <% }); %>
+      <% }) %>
     <% } else { %>
-      <option value="">No classifications available</option>
+      <option disabled>No classifications available</option>
     <% } %>
   </select>
 
   <!-- Vehicle Make -->
   <label for="inv_make">Make</label>
-  <input type="text" name="inv_make" id="inv_make" value="<%= stickyData.inv_make || '' %>" required>
+  <input 
+    type="text" 
+    name="inv_make" 
+    id="inv_make" 
+    value="<%= stickyData.inv_make || '' %>" 
+    required
+  >
 
   <!-- Vehicle Model -->
   <label for="inv_model">Model</label>
-  <input type="text" name="inv_model" id="inv_model" value="<%= stickyData.inv_model || '' %>" required>
+  <input 
+    type="text" 
+    name="inv_model" 
+    id="inv_model" 
+    value="<%= stickyData.inv_model || '' %>" 
+    required
+  >
 
   <!-- Vehicle Year -->
   <label for="inv_year">Year</label>
-  <input type="number" name="inv_year" id="inv_year" value="<%= stickyData.inv_year || '' %>" required>
+  <input 
+    type="number" 
+    name="inv_year" 
+    id="inv_year" 
+    value="<%= stickyData.inv_year || '' %>" 
+    required
+    min="1900" 
+    max="2100"
+  >
 
   <!-- Vehicle Description -->
   <label for="inv_description">Description</label>
-  <textarea name="inv_description" id="inv_description" required><%= stickyData.inv_description || '' %></textarea>
+  <textarea 
+    name="inv_description" 
+    id="inv_description" 
+    required
+  ><%= stickyData.inv_description || '' %></textarea>
 
   <!-- Vehicle Image Path -->
   <label for="inv_image">Image Path</label>
-  <input type="text" name="inv_image" id="inv_image" value="<%= stickyData.inv_image || '/images/vehicles/no-image.png' %>" required>
+  <input 
+    type="text" 
+    name="inv_image" 
+    id="inv_image" 
+    value="<%= stickyData.inv_image || '/images/vehicles/no-image.png' %>" 
+    required
+  >
 
   <!-- Vehicle Thumbnail Path -->
   <label for="inv_thumbnail">Thumbnail Path</label>
-  <input type="text" name="inv_thumbnail" id="inv_thumbnail" value="<%= stickyData.inv_thumbnail || '/images/vehicles/no-image.png' %>" required>
+  <input 
+    type="text" 
+    name="inv_thumbnail" 
+    id="inv_thumbnail" 
+    value="<%= stickyData.inv_thumbnail || '/images/vehicles/no-image-thumbnail.png' %>" 
+    required
+  >
 
   <!-- Vehicle Price -->
   <label for="inv_price">Price</label>
-  <input type="number" name="inv_price" id="inv_price" step="0.01" value="<%= stickyData.inv_price || '' %>" required>
+  <input 
+    type="number" 
+    name="inv_price" 
+    id="inv_price" 
+    step="0.01" 
+    value="<%= stickyData.inv_price || '' %>" 
+    required
+  >
 
   <!-- Vehicle Miles -->
   <label for="inv_miles">Miles</label>
-  <input type="number" name="inv_miles" id="inv_miles" value="<%= stickyData.inv_miles || '' %>" required>
+  <input 
+    type="number" 
+    name="inv_miles" 
+    id="inv_miles" 
+    value="<%= stickyData.inv_miles || '' %>" 
+    required
+  >
 
   <!-- Vehicle Color -->
   <label for="inv_color">Color</label>
-  <input type="text" name="inv_color" id="inv_color" value="<%= stickyData.inv_color || '' %>" required>
+  <input 
+    type="text" 
+    name="inv_color" 
+    id="inv_color" 
+    value="<%= stickyData.inv_color || '' %>" 
+    required
+  >
 
   <button type="submit">Add Vehicle</button>
 </form>
 
 <%- include('../partials/footer') %>
+
+<script>
+  // Client-side validation for form fields
+  document.getElementById('add-inventory-form').addEventListener('submit', function(e) {
+    const regex = /^[a-zA-Z0-9 ]+$/; // Allow letters, numbers, and spaces for make, model, etc.
+    const invMake = document.getElementById('inv_make').value;
+    const invModel = document.getElementById('inv_model').value;
+
+    if (!regex.test(invMake) || !regex.test(invModel)) {
+      e.preventDefault();
+      alert('Vehicle make and model must only contain letters, numbers, and spaces.');
+    }
+  });
+</script>
