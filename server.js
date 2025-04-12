@@ -1,115 +1,120 @@
 /* ******************************************
- * This server.js file is the primary entry 
- * point of the application. It controls 
- * routing, views, middleware, and error handling.
+ * This server.js file is the primary file of the 
+ * application. It is used to control the project.
  *******************************************/
-
 /* ***********************
  * Require Statements
  *************************/
-require("dotenv").config()
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
-
+const env = require("dotenv").config()
 const app = express()
-
-const staticRoutes = require("./routes/static")
-const inventoryRoutes = require("./routes/inventoryRoute")
+const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
+const inventoryRoute = require("./routes/inventoryRoute")
+const accountRoute = require("./routes/accountRoute")
+const errorRoute = require("./routes/errorRoute")
+const reviewRoute = require("./routes/reviewRoute")
 const utilities = require("./utilities")
-
 const session = require("express-session")
-const pool = require('./database/')
+const pool = require("./database")
+const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
-const accountRoute = require("./routes/accountRoute");
-
-const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-app.use(cookieParser()); // parse cookies from incoming requests
 /* ***********************
  * Middleware
- * ************************/
+ *************************/
 app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
+  store:new (require('connect-pg-simple')(session))({
+    createTableIfMissing:true,
     pool,
   }),
   secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
+  resave:true,
+  saveUninitialized:true,
+  name:'sessionId'
 }))
 
-
-// Express Messages Middleware
+//Express Messages Middleware
 app.use(require('connect-flash')())
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res)
+app.use(function(req,res,next){
+  res.locals.messages = require('express-messages')(req,res)
   next()
 })
 
+//Body-Parser Middleware
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+
+//Cookie
+app.use(cookieParser())
+
+app.use(utilities.checkJWTToken)
 
 /* ***********************
  * View Engine and Templates
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // layout not in views root
-
-
-
-/* ***********************
- * Middleware
- *************************/
-app.use(express.static("public"))
-app.use(staticRoutes)
+app.set("layout", "./layouts/layout")   //not at views root
 
 /* ***********************
  * Routes
  *************************/
-// Home page
+app.use(static)
+
+//Index Route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
-// Inventory routes
-app.use("/inventory", inventoryRoutes)
+//Inventory Routes
+app.use("/inv", inventoryRoute)
 
-app.use("/account", accountRoute);
+//Account Routes
+app.use("/account",accountRoute)
 
-/* ***********************
- * File Not Found Route
- * This must be the last route
- *************************/
+//Reviews Routes
+app.use("/reviews",reviewRoute)
+
+//Error Route
+app.use("/err",errorRoute)
+
+// File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
-  next({ status: 404, message: "Sorry, we appear to have lost that page." })
+  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
 })
 
 /* ***********************
- * Error Handling Middleware
- * This handles any errors thrown in the app
- *************************/
-app.use(async (err, req, res, next) => {
+* Express Error Handler
+* Place after all other middleware
+*************************/
+app.use(async (err, req, res, next)=>{
+
   let nav = await utilities.getNav()
-  const status = err.status || 500
-  const message = err.message || "Oh no! There was a crash. Maybe try a different route?"
+  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
+  
+  if(err.status==404)
+    message = err.message
+  else
+    message = 'Oh no! There was a crash. Maybe try a different route?'
 
-  console.error(`Error at "${req.originalUrl}": ${message}`)
-
-  res.status(status).render("errors/error", {
-    title: status,
+  res.render("errors/error",{
+    title: err.status || "Server Error",
     message,
-    nav,
+    nav
   })
+
 })
 
 /* ***********************
- * Server Initialization
+ * Local Server Information
+ * Values from .env (environment) file
  *************************/
-const port = process.env.PORT || 3000
-const host = process.env.HOST || "localhost"
+const port = process.env.PORT
+const host = process.env.HOST
 
+/* ***********************
+ * Log statement to confirm server operation
+ *************************/
 app.listen(port, () => {
-  console.log(`App listening on http://${host}:${port}`)
+  console.log(`app listening on ${host}:${port}`)
 })

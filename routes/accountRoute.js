@@ -1,32 +1,53 @@
-const express = require("express");
-const router = new express.Router();
-const utilities = require("../utilities/");
-const accountController = require("../controllers/accountController");
-const baseController = require("../controllers/baseController");
-const regValidate = require('../utilities/account-validation')
+const express = require("express")
+const router = new express.Router()
+const accountController = require("../controllers/accountController")
+const utilities = require("../utilities")
+const regValidate = require("../utilities/account-validation")
 
-// Route to build login view
-router.get("/login", utilities.handleErrors(accountController.buildLogin));
+router.get("/", utilities.checkLogin,utilities.handleErrors(accountController.buildManagement))
 
-// Use the register route in the account controller
-router.get("/register", utilities.handleErrors(accountController.buildRegister));
+//Serve Login Form
+router.get("/login", utilities.handleErrors(accountController.buildLogin))
 
-router.post('/register', utilities.handleErrors(accountController.registerAccount));
+//Serve Registration Form
+router.get("/register", utilities.handleErrors(accountController.buildRegister))
 
-// Process the registration data
+//Process Registration Attempt
 router.post(
-    "/register",
-    regValidate.registationRules(),
+    "/register", 
+    regValidate.registrationRules(),
     regValidate.checkRegData,
     utilities.handleErrors(accountController.registerAccount)
-  )
+)
 
-  // Process the login attempt
+//Process Login Attempt
 router.post(
     "/login",
-    (req, res) => {
-      res.status(200).send('login process')
-    }
-  )
+    regValidate.loginRules(),
+    regValidate.checkLoginData,
+    utilities.handleErrors(accountController.accountLogin)
+)
+
+//Serve Account Update Forms
+router.get("/update", utilities.checkLogin, utilities.handleErrors(accountController.buildUpdate))
+
+//Process Update Info
+router.post(
+    "/update", 
+    regValidate.updateInfoRules(),
+    regValidate.checkUpdateInfoData,
+    utilities.handleErrors(accountController.updateAccount)
+)
+
+//Process Update Info
+router.post(
+    "/update-password", 
+    regValidate.passwordRules(),
+    regValidate.checkPasswordData,
+    utilities.handleErrors(accountController.updatePassword)
+)
+
+//Logout
+router.get("/logout", utilities.handleErrors(accountController.logout))
 
 module.exports = router;

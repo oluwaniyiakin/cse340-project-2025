@@ -1,24 +1,38 @@
-const { Pool } = require("pg");
-require("dotenv").config();
+const { Pool } = require("pg")
+require("dotenv").config()
 
-// Always enable SSL for databases like Render
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // allow self-signed certs (Render requirement)
-  },
-});
+/* ***************
+ * Connection Pool
+ * SSL Object needed for local testing of app
+ * But will cause problems in production environment
+ * If - else will make determination which to use
+ * *************** */
+let pool
+if (process.env.NODE_ENV == "development") {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  })
 
-const db = {
-  query: async (text, params) => {
-    try {
-      const res = await pool.query(text, params);
-      return res;
-    } catch (error) {
-      console.error("❌ Error in query", { text, error });
-      throw error;
-    }
+  // Added for troubleshooting queries
+  // during development
+  module.exports = {
+    async query(text, params) {
+      try {
+        const res = await pool.query(text, params)
+        console.log("executed query", { text })
+        return res
+      } catch (error) {
+        console.error("error in query", { text })
+        throw error
+      }
+    },
   }
-};
-
-module.exports = db;
+} else {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+  })
+  module.exports = pool
+} 
