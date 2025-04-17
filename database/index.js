@@ -1,22 +1,24 @@
-const { Pool } = require("pg")
-require("dotenv").config()
+const { Pool } = require("pg");
+require("dotenv").config();
 
+// Always enable SSL for databases like Render
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Render DB requires this
+    rejectUnauthorized: false, // allow self-signed certs (Render requirement)
   },
-})
+});
 
-module.exports = {
-  async query(text, params) {
+const db = {
+  query: async (text, params) => {
     try {
-      const res = await pool.query(text, params)
-      console.log("executed query", { text })
-      return res
+      const res = await pool.query(text, params);
+      return res;
     } catch (error) {
-      console.error("error in query", { text })
-      throw error
+      console.error("❌ Error in query", { text, error });
+      throw error;
     }
-  },
-}
+  }
+};
+
+module.exports = db;

@@ -1,20 +1,71 @@
-# Each item listed in this file will be ignored by git
-# and will not be uploaded to github. The blank lines
-# and comments are unnecessary, but included for 
-# clarification.
+# ======================================
+# Node.js dependencies
+# ======================================
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
 
-# node_modules is a storage folder for Node and
-# can get very large.
-node_modules
-
-# .env file is for local use only. It contains
-# values not to be shared and most of the values
-# will be manually created by you or dynamically # created on the hosting server
+# ======================================
+# Environment variables
+# ======================================
 .env
+.env.*.local
 
-# .DS_Store is only for Mac users
-**/.DS_Store
+# ======================================
+# Logs
+# ======================================
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
-README.md
+# ======================================
+# Operating system files
+# ======================================
+.DS_Store
+Thumbs.db
 
-accounts.txt
+# ======================================
+# VS Code settings
+# ======================================
+.vscode/
+
+# ======================================
+# Production builds / cache
+# ======================================
+dist/
+build/
+.cache/
+.next/
+out/
+coverage/
+
+# ======================================
+# Testing / Temp files
+# ======================================
+*.test.js
+*.spec.js
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# ======================================
+# Swagger / Postman / API Test Artifacts
+# ======================================
+*.rest
+*.http
+
+# ======================================
+# Misc
+# ======================================
+*.tgz
+*.gz
+*.zip
+.idea/
+*.iml
+
+node_modules/

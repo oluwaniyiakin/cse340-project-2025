@@ -1,56 +1,45 @@
-const express = require("express")
-const router = new express.Router()
-const invController = require("../controllers/invController")
-const utilities = require("../utilities")
-const invValidate = require("../utilities/inventory-validation")
-const revValidate = require("../utilities/review-validation")
+const express = require("express");
+const router = new express.Router();
+const { check, validationResult } = require("express-validator");
+const utilities = require("../utilities/");
+const inventoryController = require("../controllers/inventoryController");
+const validationMiddleware = require('../middleware/validationMiddleware');
 
+// Route to build inventory management view
+router.get("/", inventoryController.buildManagement);
 
-router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
+// Route to build inventory by classification view
+router.get("/type/:classificationId", inventoryController.buildByClassificationId);
 
-router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildInventoryDetailView))
+// Vehicle Detail Route
+router.get("/detail/:id", utilities.handleErrors(inventoryController.buildDetail));
 
-/*********************
- * MANAGEMENT ROUTES
- ********************/
+// Broken route (for testing error handling)
+router.get("/broken", utilities.handleErrors(inventoryController.throwError));
 
-router.get("/", utilities.checkEmployment, utilities.handleErrors(invController.buildManagementView))
+// Route to build add classification view
+router.get("/add-classification", inventoryController.buildAddClassification);
 
-//Add Classification
-router.get("/add-classification", utilities.checkEmployment, utilities.handleErrors(invController.buildAddClass))
-router.post(
-    "/add-classification",
-    invValidate.addClassRules(),
-    invValidate.checkAddClassData,
-    utilities.handleErrors(invController.addClassification)
-)
+// Route to handle adding a new classification with validation
+router.post("/add-classification",
+  check("classification_name", "No special characters or spaces allowed")
+    .matches(/^[a-zA-Z0-9]+$/)
+    .isLength({ min: 1 }),
+  inventoryController.addClassification
+);
 
-//Add Vehicle
-router.get("/add-vehicle", utilities.checkEmployment, utilities.handleErrors(invController.buildAddVehicle))
-router.post(
-    "/add-vehicle",
-    invValidate.addVehicleRules(),
-    invValidate.checkVehicleData,
-    utilities.handleErrors(invController.addVehicle)
-)
+// Route to build add inventory view
+router.get("/add-inventory", inventoryController.buildAddInventory);
 
-//Modify Vehicle
-router.get("/edit/:inv_id", utilities.checkEmployment, utilities.handleErrors(invController.buildModifyVehicle))
-router.post(
-    "/edit-vehicle/",
-    invValidate.addVehicleRules(),
-    invValidate.checkUpdateData, 
-    utilities.handleErrors(invController.updateVehicle)
-)
+// Route to handle add inventory form submission
+router.post("/add-inventory",
+  // Add input validation rules here (e.g., for vehicle make, model, etc.)
+  check("inv_make", "Make must not be empty").notEmpty(),
+  check("inv_model", "Model must not be empty").notEmpty(),
+  check("inv_year", "Year must be a valid number").isNumeric(),
+  check("inv_price", "Price must be a valid number").isNumeric(),
+  check("inv_miles", "Miles must be a valid number").isNumeric(),
+  inventoryController.addInventory
+);
 
-//Delete Vehicle
-router.get("/delete/:inv_id", utilities.checkEmployment, utilities.handleErrors(invController.buildConfirmDelete))
-router.post(
-    "/delete",
-    utilities.handleErrors(invController.deleteVehicle)
-)
-
-//Get vehicles by category
-router.get('/getInventory/:classification_id', utilities.handleErrors(invController.getInventoryJSON))
-
-module.exports = router
+module.exports = router;

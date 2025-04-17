@@ -1,34 +1,15 @@
- <!-- Heading-->
-<% if (title) { %>
-    <h1><%= title %></h1>
-<% } else {
-    res.redirect('/')
-} %>
-
-<form id="add-class-form" action="/inv/add-classification" method="post">
-    <!--Message Block-->
-    <%- messages() %>
-
-    <!-- Error Block -->
-    <% if (errors) { %>
-        <ul class="notice">
-            <% errors.array().forEach(error=>{ %>
-                <li><%= error.msg %></li>
-            <% }) %>
-        </ul>
-    <% } %>
-
-    <label>
-        Classification Name*
-        <input 
-            type="text" 
-            name="classification_name" 
-            required 
-            placeholder="Enter a name for the new classification" 
-            value="<%= locals.classification_name %>"
-            pattern = "^[a-zA-Z0-9]+$"
-        >
-    </label>
-    <p>Classification names must not contain spaces or special characters.</p>
-    <input type="submit" value="Create Classification">
+<%- include('../partials/header') %>
+<h1>Add New Classification</h1>
+<% if (errors && errors.length > 0) { %>
+  <ul>
+    <% errors.forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+<form action="/inventory/add-classification" method="post">
+  <label for="classification_name">Classification Name</label>
+  <input type="text" id="classification_name" name="classification_name" pattern="^[a-zA-Z0-9]+$" required>
+  <button type="submit">Add</button>
 </form>
+<%- include('../partials/footer') %>
